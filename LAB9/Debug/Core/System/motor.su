@@ -1,0 +1,9 @@
+../Core/System/motor.c:6:6:motorInit	8	static
+../Core/System/motor.c:14:6:setMotorSpeed	32	static
+../Core/System/motor.c:98:6:motorBreak	8	static
+../Core/System/motor.c:270:6:moveForward	16	static
+../Core/System/motor.c:281:6:moveBackward	16	static
+../Core/System/motor.c:292:6:moveLeft	16	static
+../Core/System/motor.c:303:6:moveRight	16	static
+../Core/System/motor.c:314:6:moveTurnLeft	16	static
+../Core/System/motor.c:325:6:moveTurnRight	16	static

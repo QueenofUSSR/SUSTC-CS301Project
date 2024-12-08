@@ -1,0 +1,9 @@
+../Core/System/motor.c:6:6:motorInit	1
+../Core/System/motor.c:14:6:setMotorSpeed	14
+../Core/System/motor.c:98:6:motorBreak	1
+../Core/System/motor.c:270:6:moveForward	1
+../Core/System/motor.c:281:6:moveBackward	1
+../Core/System/motor.c:292:6:moveLeft	1
+../Core/System/motor.c:303:6:moveRight	1
+../Core/System/motor.c:314:6:moveTurnLeft	1
+../Core/System/motor.c:325:6:moveTurnRight	1

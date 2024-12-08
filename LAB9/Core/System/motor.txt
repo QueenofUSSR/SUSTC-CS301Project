@@ -1,0 +1,25 @@
+#ifndef __MOTOR_H
+#define __MOTOR_H
+#include <stdlib.h>
+#include "main.h"
+#include "tim.h"
+#include "gpio.h"
+
+void motorInit();
+void setMotorSpeed(TIM_HandleTypeDef *htim, uint32_t Channel, int16_t speed);
+void motorRun(int16_t speed);
+void motorBreak();
+void motorBack(int16_t speed);
+void motorTurnLeft(int16_t speed);
+void motorSpinLeft(int16_t speed);
+void motorTurnRight(int16_t speed);
+void motorSpinRight(int16_t speed);
+void motorRunDelay(int16_t speed, int time);
+void motorBreakDelay(int time);
+void motorBackDelay(int16_t speed, int time);
+void motorTurnLeftDelay(int16_t speed, int time);
+void motorSpinLeftDelay(int16_t speed, int time);
+void motorTurnRightDelay(int16_t speed, int time);
+void motorSpinRightDelay(int16_t speed, int time);
+
+#endif
