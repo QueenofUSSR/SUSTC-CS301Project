@@ -1,4 +1,4 @@
-23:43:46 **** Build of configuration Debug for project Car ****
+23:48:00 **** Build of configuration Debug for project car ****
 make -j16 all 
 arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal.o"
 arm-none-eabi-gcc "../Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.d" -MT"Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Drivers/STM32F1xx_HAL_Driver/Src/stm32f1xx_hal_cortex.o"
@@ -28,20 +28,20 @@ arm-none-eabi-gcc "../Core/Src/tim.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DU
   273 |                         moveTurnRight(&htim4);
       |                         ^~~~~~~~~~~~~
       |                         moveTrunRight
-arm-none-eabi-gcc -o "Car.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\30951\Downloads\LAB9\Car\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Car.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-Finished building target: Car.elf
+arm-none-eabi-gcc -o "car.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\30951\Downloads\LAB9\car\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="car.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: car.elf
  
-arm-none-eabi-size  Car.elf 
-arm-none-eabi-objdump -h -S Car.elf  > "Car.list"
+arm-none-eabi-size  car.elf 
+arm-none-eabi-objdump -h -S car.elf  > "car.list"
+arm-none-eabi-objcopy  -O ihex car.elf  "car.hex"
    text	   data	    bss	    dec	    hex	filename
-  10200	     12	   1644	  11856	   2e50	Car.elf
-arm-none-eabi-objcopy  -O ihex Car.elf  "Car.hex"
+  10200	     12	   1644	  11856	   2e50	car.elf
 Finished building: default.size.stdout
  
-Finished building: Car.hex
+Finished building: car.hex
  
-Finished building: Car.list
+Finished building: car.list
  
 
-23:43:47 Build Finished. 0 errors, 1 warnings. (took 1s.119ms)
+23:48:01 Build Finished. 0 errors, 1 warnings. (took 1s.152ms)
 
