@@ -1,0 +1,26 @@
+19:22:32 **** Incremental Build of configuration Debug for project LAB9 ****
+make -j16 all 
+arm-none-eabi-gcc "../Core/System/motor.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/System/motor.d" -MT"Core/System/motor.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/System/motor.o"
+arm-none-eabi-gcc "../Core/Src/stm32f1xx_it.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f1xx_it.d" -MT"Core/Src/stm32f1xx_it.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/stm32f1xx_it.o"
+../Core/Src/stm32f1xx_it.c: In function 'HAL_GPIO_EXTI_Callback':
+../Core/Src/stm32f1xx_it.c:273:25: warning: implicit declaration of function 'moveTurnRight'; did you mean 'moveTrunRight'? [-Wimplicit-function-declaration]
+  273 |                         moveTurnRight(&htim4);
+      |                         ^~~~~~~~~~~~~
+      |                         moveTrunRight
+arm-none-eabi-gcc -o "LAB9.elf" @"objects.list"   -mcpu=cortex-m3 -T"C:\Users\30951\Downloads\LAB9\LAB9\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LAB9.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: LAB9.elf
+ 
+arm-none-eabi-size  LAB9.elf 
+arm-none-eabi-objdump -h -S LAB9.elf  > "LAB9.list"
+   text	   data	    bss	    dec	    hex	filename
+  10200	     12	   1644	  11856	   2e50	LAB9.elf
+arm-none-eabi-objcopy  -O ihex LAB9.elf  "LAB9.hex"
+Finished building: default.size.stdout
+Finished building: LAB9.list
+ 
+Finished building: LAB9.hex
+ 
+ 
+
+19:22:34 Build Finished. 0 errors, 1 warnings. (took 1s.812ms)
+
