@@ -23,6 +23,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "motor.h"
+#include "UltrasonicWave.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -200,17 +201,17 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles EXTI line0 interrupt.
+  * @brief This function handles EXTI line1 interrupt.
   */
-void EXTI0_IRQHandler(void)
+void EXTI1_IRQHandler(void)
 {
-  /* USER CODE BEGIN EXTI0_IRQn 0 */
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
 
-  /* USER CODE END EXTI0_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(K3_Pin);
-  /* USER CODE BEGIN EXTI0_IRQn 1 */
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(ECHO_Pin);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
 
-  /* USER CODE END EXTI0_IRQn 1 */
+  /* USER CODE END EXTI1_IRQn 1 */
 }
 
 /**
@@ -281,7 +282,23 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			HAL_GPIO_TogglePin(L2_GPIO_Port, L2_Pin);
 		}
 		break;
+
+	case ECHO_Pin:
+			TIM2->CNT = 0;
+			HAL_TIM_Base_Start(&htim2);  // 启动定时2
+
+			// 等待 ECHO_PIN 为低电平
+			while (HAL_GPIO_ReadPin(ECHO_GPIO_Port, ECHO_Pin));
+
+			HAL_TIM_Base_Stop(&htim2);  // 停止定时2
+
+			// 获取定时器计数，计算距离
+			ultrasonicWaveDist = (int)(TIM2->CNT) * 0.034f / 2.0f;
+
+			break;
 	default: break;
 	}
 }
+
+
 /* USER CODE END 1 */
