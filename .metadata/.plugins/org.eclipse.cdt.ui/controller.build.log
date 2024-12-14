@@ -1,75 +1,76 @@
-14:05:14 **** Incremental Build of configuration Debug for project controller ****
+14:09:34 **** Incremental Build of configuration Debug for project controller ****
 make -j16 all 
+arm-none-eabi-gcc "../Core/Src/lcd.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/lcd.d" -MT"Core/Src/lcd.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/lcd.o"
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m3 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F103xE -c -I../Core/Inc -I../Drivers/STM32F1xx_HAL_Driver/Inc/Legacy -I../Drivers/STM32F1xx_HAL_Driver/Inc -I../Drivers/CMSIS/Device/ST/STM32F1xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfloat-abi=soft -mthumb -o "Core/Src/main.o"
 ../Core/Src/main.c: In function 'draw_obstacle':
-../Core/Src/main.c:168:43: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  168 |         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_obs);
+../Core/Src/main.c:173:43: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  173 |         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_obs);
       |                                           ^~~~~~~~~~
       |                                           |
       |                                           const unsigned char *
-In file included from ../Core/Src/main.c:32:
+In file included from ../Core/Src/main.c:35:
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
 ../Core/Src/main.c: In function 'draw_path':
-../Core/Src/main.c:175:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  175 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_HLINE);
+../Core/Src/main.c:180:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  180 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_HLINE);
       |                                                           ^~~~~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:178:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  178 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_VLINE);
+../Core/Src/main.c:183:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  183 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_VLINE);
       |                                                           ^~~~~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:181:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  181 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_WN);
+../Core/Src/main.c:186:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  186 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_WN);
       |                                                           ^~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:184:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  184 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_EN);
+../Core/Src/main.c:189:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  189 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_EN);
       |                                                           ^~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:187:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  187 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_WS);
+../Core/Src/main.c:192:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  192 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_WS);
       |                                                           ^~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:190:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  190 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_ES);
+../Core/Src/main.c:195:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  195 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_ES);
       |                                                           ^~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:193:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  193 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_start);
+../Core/Src/main.c:198:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  198 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_start);
       |                                                           ^~~~~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:196:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  196 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_end);
+../Core/Src/main.c:201:59: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  201 |                         LCD_ShowPicture(X+1, Y+1, 58, 58, gImage_end);
       |                                                           ^~~~~~~~~~
       |                                                           |
       |                                                           const unsigned char *
@@ -77,73 +78,73 @@ In file included from ../Core/Src/main.c:32:
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
 ../Core/Src/main.c: In function 'full_control':
-../Core/Src/main.c:226:9: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
-  226 |         sprintf(str, "mode%d", mode);
+../Core/Src/main.c:231:9: warning: implicit declaration of function 'sprintf' [-Wimplicit-function-declaration]
+  231 |         sprintf(str, "mode%d", mode);
       |         ^~~~~~~
-../Core/Src/main.c:37:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
-   36 | #include "24l01.h" //通信驱动 基于spi进行通信
+../Core/Src/main.c:43:1: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+   42 | #include "bluetooth.h"
   +++ |+#include <stdio.h>
-   37 | //#include "remote.h" 红外遥控驱动
-../Core/Src/main.c:226:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
-  226 |         sprintf(str, "mode%d", mode);
+   43 | /* USER CODE END Includes */
+../Core/Src/main.c:231:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  231 |         sprintf(str, "mode%d", mode);
       |         ^~~~~~~
-../Core/Src/main.c:226:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
-../Core/Src/main.c:226:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
-  226 |         sprintf(str, "mode%d", mode);
+../Core/Src/main.c:231:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/main.c:231:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  231 |         sprintf(str, "mode%d", mode);
       |                 ^~~
       |                 |
       |                 unsigned char *
-../Core/Src/main.c:226:17: note: expected 'char *' but argument is of type 'unsigned char *'
-../Core/Src/main.c:228:40: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  228 |         LCD_ShowPicture(3, 41, 58, 58, gImage_turnleft);
+../Core/Src/main.c:231:17: note: expected 'char *' but argument is of type 'unsigned char *'
+../Core/Src/main.c:233:40: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  233 |         LCD_ShowPicture(3, 41, 58, 58, gImage_turnleft);
       |                                        ^~~~~~~~~~~~~~~
       |                                        |
       |                                        const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:229:41: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  229 |         LCD_ShowPicture(62, 41, 58, 58, gImage_forward);
+../Core/Src/main.c:234:41: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  234 |         LCD_ShowPicture(62, 41, 58, 58, gImage_forward);
       |                                         ^~~~~~~~~~~~~~
       |                                         |
       |                                         const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:230:42: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  230 |         LCD_ShowPicture(121, 41, 58, 58, gImage_turnright);
+../Core/Src/main.c:235:42: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  235 |         LCD_ShowPicture(121, 41, 58, 58, gImage_turnright);
       |                                          ^~~~~~~~~~~~~~~~
       |                                          |
       |                                          const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:231:41: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  231 |         LCD_ShowPicture(3, 100, 58, 58, gImage_left);
+../Core/Src/main.c:236:41: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  236 |         LCD_ShowPicture(3, 100, 58, 58, gImage_left);
       |                                         ^~~~~~~~~~~
       |                                         |
       |                                         const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:232:42: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  232 |         LCD_ShowPicture(62, 100, 58, 58, gImage_stop);
+../Core/Src/main.c:237:42: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  237 |         LCD_ShowPicture(62, 100, 58, 58, gImage_stop);
       |                                          ^~~~~~~~~~~
       |                                          |
       |                                          const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:233:43: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  233 |         LCD_ShowPicture(121, 100, 58, 58, gImage_right);
+../Core/Src/main.c:238:43: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  238 |         LCD_ShowPicture(121, 100, 58, 58, gImage_right);
       |                                           ^~~~~~~~~~~~
       |                                           |
       |                                           const unsigned char *
 ../Core/Inc/lcd.h:159:89: note: expected 'short unsigned int *' but argument is of type 'const unsigned char *'
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
-../Core/Src/main.c:234:42: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
-  234 |         LCD_ShowPicture(62, 159, 58, 58, gImage_back);
+../Core/Src/main.c:239:42: warning: passing argument 5 of 'LCD_ShowPicture' from incompatible pointer type [-Wincompatible-pointer-types]
+  239 |         LCD_ShowPicture(62, 159, 58, 58, gImage_back);
       |                                          ^~~~~~~~~~~
       |                                          |
       |                                          const unsigned char *
@@ -151,42 +152,74 @@ In file included from ../Core/Src/main.c:32:
   159 | void LCD_ShowPicture(uint16_t x,uint16_t y,uint16_t column,uint16_t row,unsigned short *pic);
       |                                                                         ~~~~~~~~~~~~~~~~^~~
 ../Core/Src/main.c: In function 'path_processing':
-../Core/Src/main.c:255:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
-  255 |         sprintf(str, "mode%d", mode);
+../Core/Src/main.c:260:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  260 |         sprintf(str, "mode%d", mode);
       |         ^~~~~~~
-../Core/Src/main.c:255:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
-../Core/Src/main.c:255:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
-  255 |         sprintf(str, "mode%d", mode);
+../Core/Src/main.c:260:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/main.c:260:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  260 |         sprintf(str, "mode%d", mode);
       |                 ^~~
       |                 |
       |                 unsigned char *
-../Core/Src/main.c:255:17: note: expected 'char *' but argument is of type 'unsigned char *'
+../Core/Src/main.c:260:17: note: expected 'char *' but argument is of type 'unsigned char *'
 ../Core/Src/main.c: In function 'detect_obs':
-../Core/Src/main.c:279:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
-  279 |         sprintf(str, "mode%d", mode);
+../Core/Src/main.c:284:9: warning: incompatible implicit declaration of built-in function 'sprintf' [-Wbuiltin-declaration-mismatch]
+  284 |         sprintf(str, "mode%d", mode);
       |         ^~~~~~~
-../Core/Src/main.c:279:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
-../Core/Src/main.c:279:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
-  279 |         sprintf(str, "mode%d", mode);
+../Core/Src/main.c:284:9: note: include '<stdio.h>' or provide a declaration of 'sprintf'
+../Core/Src/main.c:284:17: warning: pointer targets in passing argument 1 of 'sprintf' differ in signedness [-Wpointer-sign]
+  284 |         sprintf(str, "mode%d", mode);
       |                 ^~~
       |                 |
       |                 unsigned char *
-../Core/Src/main.c:279:17: note: expected 'char *' but argument is of type 'unsigned char *'
+../Core/Src/main.c:284:17: note: expected 'char *' but argument is of type 'unsigned char *'
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:360:3: warning: implicit declaration of function 'MX_SPI1_Init'; did you mean 'MX_GPIO_Init'? [-Wimplicit-function-declaration]
+  360 |   MX_SPI1_Init();
+      |   ^~~~~~~~~~~~
+      |   MX_GPIO_Init
+../Core/Src/lcd.c: In function 'LCD_Init':
+../Core/Src/lcd.c:700:5: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+  700 |     printf(" LCD ID:%x\r\n", lcddev.id); //��ӡLCD ID
+      |     ^~~~~~
+../Core/Src/lcd.c:6:1: note: include '<stdio.h>' or provide a declaration of 'printf'
+    5 | #include "delay.h"
+  +++ |+#include <stdio.h>
+    6 | #include "stm32f1xx_hal.h"
+../Core/Src/lcd.c:700:5: warning: incompatible implicit declaration of built-in function 'printf' [-Wbuiltin-declaration-mismatch]
+  700 |     printf(" LCD ID:%x\r\n", lcddev.id); //��ӡLCD ID
+      |     ^~~~~~
+../Core/Src/lcd.c:700:5: note: include '<stdio.h>' or provide a declaration of 'printf'
+../Core/Src/lcd.c: In function 'LCD_ShowImage':
+../Core/Src/lcd.c:2363:23: warning: unused variable 't1' [-Wunused-variable]
+ 2363 |         uint8_t temp, t1, t, k;
+      |                       ^~
+../Core/Src/lcd.c: In function 'LCD_ShowEndImage':
+../Core/Src/lcd.c:2422:24: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ 2422 |         uint8_t *pic = endpicture;
+      |                        ^~~~~~~~~~
+../Core/Src/lcd.c: In function 'LCD_ShowInputWrongImage':
+../Core/Src/lcd.c:2452:24: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+ 2452 |         uint8_t *pic = InputWrongPicture;
+      |                        ^~~~~~~~~~~~~~~~~
 arm-none-eabi-gcc -o "controller.elf" @"objects.list"   -mcpu=cortex-m3 -T"D:\2024Fall\embed_system\SUSTC-CS301Project\controller\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: ./Core/Src/spi.o:D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/spi.c:27: multiple definition of `hspi1'; ./Core/Src/main.o:D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:304: first defined here
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: ./Core/Src/usart.o:D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/usart.c:27: multiple definition of `huart1'; ./Core/Src/main.o:D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:50: first defined here
 D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: controller.elf has a LOAD segment with RWX permissions
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: ./Core/Src/main.o: in function `full_control':
-D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_turnleft'
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_forward'
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_turnright'
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_left'
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_stop'
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_right'
-D:/program_files/st/STM32CubeIDE_1.16.0/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.1.0.202410251130/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: D:/2024Fall/embed_system/SUSTC-CS301Project/controller/Debug/../Core/Src/main.c:248: undefined reference to `gImage_back'
-collect2.exe: error: ld returned 1 exit status
-make: *** [makefile:70: controller.elf] Error 1
-"make -j16 all" terminated with exit code 2. Build might be incomplete.
+Finished building target: controller.elf
+ 
+arm-none-eabi-size  controller.elf 
+arm-none-eabi-objdump -h -S controller.elf  > "controller.list"
+arm-none-eabi-objcopy  -O ihex controller.elf  "controller.hex"
+   text	   data	    bss	    dec	    hex	filename
+ 161856	    192	   2176	 164224	  28180	controller.elf
+arm-none-eabi-objcopy  -O binary controller.elf  "controller.bin"
+Finished building: default.size.stdout
+ 
+Finished building: controller.hex
+Finished building: controller.bin
+ 
+ 
+Finished building: controller.list
+ 
 
-14:05:15 Build Failed. 10 errors, 24 warnings. (took 808ms)
+14:09:35 Build Finished. 0 errors, 30 warnings. (took 1s.162ms)
 
