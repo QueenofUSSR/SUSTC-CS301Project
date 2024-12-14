@@ -5,12 +5,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Core/System/Server.c \
+../Core/System/UltrasonicWave.c \
 ../Core/System/motor.c 
 
 OBJS += \
+./Core/System/Server.o \
+./Core/System/UltrasonicWave.o \
 ./Core/System/motor.o 
 
 C_DEPS += \
+./Core/System/Server.d \
+./Core/System/UltrasonicWave.d \
 ./Core/System/motor.d 
 
 
@@ -21,7 +27,7 @@ Core/System/%.o Core/System/%.su Core/System/%.cyclo: ../Core/System/%.c Core/Sy
 clean: clean-Core-2f-System
 
 clean-Core-2f-System:
-	-$(RM) ./Core/System/motor.cyclo ./Core/System/motor.d ./Core/System/motor.o ./Core/System/motor.su
+	-$(RM) ./Core/System/Server.cyclo ./Core/System/Server.d ./Core/System/Server.o ./Core/System/Server.su ./Core/System/UltrasonicWave.cyclo ./Core/System/UltrasonicWave.d ./Core/System/UltrasonicWave.o ./Core/System/UltrasonicWave.su ./Core/System/motor.cyclo ./Core/System/motor.d ./Core/System/motor.o ./Core/System/motor.su
 
 .PHONY: clean-Core-2f-System
 
