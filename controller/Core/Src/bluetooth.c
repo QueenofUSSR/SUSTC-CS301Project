@@ -3,6 +3,7 @@
 #include <string.h>
 #include "bluetooth.h"
 #include "gpio.h"
+#include "lcd.h"
 
 extern UART_HandleTypeDef huart2;
 
@@ -105,6 +106,53 @@ uint8_t CalculateChecksum(UART_Package_t* pkg) {
 int VerifyChecksum(UART_Package_t* pkg) {
     uint8_t sum = CalculateChecksum(pkg);
     return (sum == pkg->checksum) ? 0 : -1;
+}
+
+void ProcessReceivedPackage(UART_Package_t* pkg) {
+    if (VerifyChecksum(pkg) != 0) {
+        return; // Invalid package
+    }
+    
+    switch(pkg->cmd_type) {
+        case CMD_MOTION:
+            if (current_mode == MODE_MANUAL) {
+                //ProcessMotionCmd(pkg->data[0]);
+            }
+            break;
+        case CMD_NAV:
+            if (current_mode == MODE_AUTO_NAV) {
+                // ProcessNavCmd(pkg->data[0], &pkg->data[1], pkg->data_len - 1);
+            }
+            break;
+        case CMD_MODE:
+            SetOperationMode(pkg->data[0]);
+            // Send mode change acknowledgment
+            SendModeChangeAck(pkg->data[0]);
+            break;
+        case CMD_DISTANCE:
+            LCD_ShowNum(0, 10, HandleDistanceData(pkg), 1, 16);
+            break;
+        default:
+            break;
+    }
+}
+
+float HandleDistanceData(UART_Package_t* pkg) {
+    float distance = 0.0f;
+    
+    // Check if this is a distance data package
+    if (pkg->cmd_type != CMD_DISTANCE || pkg->data_len != 4) {
+        return -1.0f;  // Invalid package
+    }
+    
+    // Convert 4 bytes back to float
+    uint8_t* float_bytes = (uint8_t*)&distance;
+    float_bytes[0] = pkg->data[0];
+    float_bytes[1] = pkg->data[1];
+    float_bytes[2] = pkg->data[2];
+    float_bytes[3] = pkg->data[3];
+    
+    return distance;
 }
 
 HAL_StatusTypeDef UART_SendPackage(UART_Package_t* pkg) {

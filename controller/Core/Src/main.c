@@ -52,6 +52,8 @@
 unsigned char DATA_TO_SEND[800];
 int state_num = 0;
 u8 STATE[30];
+
+uint8_t rxBuffer[38];
 // UART_HandleTypeDef huart1;
 uint8_t map[4][4] = {
     {0, 0, 0, 0},
@@ -246,6 +248,21 @@ void full_control()
 			int touchCol = (tp_dev.x[0]-2)/59;
 			LCD_ShowNum(0, 0, touchRow, 1, 16);
 			LCD_ShowNum(20, 0, touchCol, 1, 16);
+			if(touchRow == 0 && touchCol == 0){
+				UART_SendMotionCmd(MOTION_TURN_L, 100);
+			} else if (touchRow == 0 && touchCol == 1){
+				UART_SendMotionCmd(MOTION_FORWARD, 100);
+			} else if (touchRow == 0 && touchCol == 2){
+				UART_SendMotionCmd(MOTION_TURN_R, 100);
+			} else if (touchRow == 1 && touchCol == 0){
+				UART_SendMotionCmd(MOTION_LEFT, 100);
+			} else if (touchRow == 1 && touchCol == 1){
+				// Pass
+			} else if (touchRow == 1 && touchCol == 2){
+				UART_SendMotionCmd(MOTION_RIGHT, 100);
+			} else if (touchRow == 2 && touchCol == 1){
+				UART_SendMotionCmd(MOTION_BACKWARD, 100);
+			}
 		}
 	} else {
 		delay_ms(10);

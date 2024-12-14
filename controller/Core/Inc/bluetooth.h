@@ -39,10 +39,11 @@ typedef struct {
 } UART_Package_t;
 
 
-void StopMotion(void);
 uint8_t GetCurrentMode(void);
 void SetOperationMode(uint8_t mode);
 uint8_t CalculateChecksum(UART_Package_t* pkg);
 HAL_StatusTypeDef UART_SendPackage(UART_Package_t* pkg);
+float HandleDistanceData(UART_Package_t* pkg);
+void ProcessReceivedPackage(UART_Package_t* pkg);
 
 #endif /* __BLUETOOTH_H */ 

@@ -60,7 +60,7 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart2;
-extern uint8_t rxBuffer[1];
+extern uint8_t rxBuffer[38];
 /* USER CODE BEGIN EV */
 /* USER CODE END EV */
 

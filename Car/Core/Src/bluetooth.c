@@ -169,35 +169,35 @@ void ProcessMotionCmd(uint8_t motion_type) {
         case MOTION_FORWARD:
             HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_SET);
             moveForward(&htim4);
-            HAL_Delay(100);
+            HAL_Delay(50);
             break;
             
         case MOTION_BACKWARD:
             HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_SET);
             moveBackward(&htim4);
-            HAL_Delay(100);
+            HAL_Delay(50);
             break;
             
         case MOTION_LEFT:
             HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_SET);
             moveLeft(&htim4);
-            HAL_Delay(100);
+            HAL_Delay(50);
             break;
         case MOTION_TURN_L:
             HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_SET);
             moveTurnLeft(&htim4);
-            HAL_Delay(100);
+            HAL_Delay(50);
             break;
             
         case MOTION_RIGHT:
             HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_SET);
             moveRight(&htim4);
-            HAL_Delay(100);
+            HAL_Delay(50);
             break;
         case MOTION_TURN_R:
             HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_SET);
             moveTurnRight(&htim4);
-            HAL_Delay(100);
+            HAL_Delay(50);
             break;
             
         case MOTION_STOP:

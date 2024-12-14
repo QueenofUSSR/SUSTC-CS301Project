@@ -24,7 +24,7 @@ Core/Src/bluetooth.o: ../Core/Src/bluetooth.c \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_spi.h \
  ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_uart.h \
  ../Core/Inc/usart.h ../Core/Inc/main.h ../Core/Inc/bluetooth.h \
- ../Core/Inc/gpio.h
+ ../Core/Inc/gpio.h ../Core/Inc/lcd.h ../Core/Inc/sys.h
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal_rcc.h:
@@ -53,3 +53,5 @@ Core/Src/bluetooth.o: ../Core/Src/bluetooth.c \
 ../Core/Inc/main.h:
 ../Core/Inc/bluetooth.h:
 ../Core/Inc/gpio.h:
+../Core/Inc/lcd.h:
+../Core/Inc/sys.h:
