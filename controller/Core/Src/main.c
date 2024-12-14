@@ -69,6 +69,13 @@ extern const unsigned char gImage_WS[6728];
 extern const unsigned char gImage_ES[6728];
 extern const unsigned char gImage_start[6728];
 extern const unsigned char gImage_end[6728];
+extern const unsigned char gImage_left[6728];
+extern const unsigned char gImage_right[6728];
+extern const unsigned char gImage_forward[6728];
+extern const unsigned char gImage_back[6728];
+extern const unsigned char gImage_turnleft[6728];
+extern const unsigned char gImage_turnright[6728];
+extern const unsigned char gImage_stop[6728];
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -223,7 +230,13 @@ void full_control()
 	unsigned char str[6];
 	sprintf(str, "mode%d", mode);
 	LCD_ShowString(180, 0, 200, 16, 16, str);
-	draw_map(map);
+	LCD_ShowPicture(3, 41, 58, 58, gImage_turnleft);
+	LCD_ShowPicture(62, 41, 58, 58, gImage_forward);
+	LCD_ShowPicture(121, 41, 58, 58, gImage_turnright);
+	LCD_ShowPicture(3, 100, 58, 58, gImage_left);
+	LCD_ShowPicture(62, 100, 58, 58, gImage_stop);
+	LCD_ShowPicture(121, 100, 58, 58, gImage_right);
+	LCD_ShowPicture(62, 159, 58, 58, gImage_back);
 	if(tp_dev.sta&TP_PRES_DOWN)
 	{
 		LCD_Clear(WHITE);
