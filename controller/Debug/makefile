@@ -66,8 +66,8 @@ all: main-build
 main-build: controller.elf secondary-outputs
 
 # Tool invocations
-controller.elf controller.map: $(OBJS) $(USER_OBJS) C:\Users\30951\Desktop\workshop\controller\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "controller.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\30951\Desktop\workshop\controller\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+controller.elf controller.map: $(OBJS) $(USER_OBJS) C:\Users\30951\Downloads\LAB9\controller\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "controller.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\30951\Downloads\LAB9\controller\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="controller.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
