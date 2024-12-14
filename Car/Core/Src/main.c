@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "tim.h"
+#include "usart.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -26,6 +27,7 @@
 #include "motor.h"
 #include "Server.h"
 #include "UltrasonicWave.h"
+#include "bluetooth.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,6 +50,7 @@
 /* USER CODE BEGIN PV */
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
+uint8_t rxBuffer[38];  // Add receive buffer
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,9 +96,11 @@ int main(void)
   MX_TIM4_Init();
   MX_TIM2_Init();
   MX_TIM5_Init();
+  MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
   motorInit();
+  HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // Start interrupt receive
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -105,6 +110,9 @@ int main(void)
 	  HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_RESET);
 	  HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_RESET);
 	  motorBreak();
+    uint8_t distance = (uint8_t)front_detection();
+    SendDistanceData(front_detection());
+    HAL_Delay(2000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

@@ -24,6 +24,7 @@
 /* USER CODE BEGIN Includes */
 #include "motor.h"
 #include "UltrasonicWave.h"
+#include "bluetooth.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -58,8 +59,9 @@
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim4;
+extern UART_HandleTypeDef huart2;
+extern uint8_t rxBuffer[1];
 /* USER CODE BEGIN EV */
-
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -256,6 +258,20 @@ void TIM4_IRQHandler(void)
   /* USER CODE END TIM4_IRQn 1 */
 }
 
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&huart2);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -300,5 +316,63 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	}
 }
 
-
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+    static UART_Package_t receivedPackage;
+    static uint8_t receiveState = 0;
+    static uint8_t dataCount = 0;
+    
+    if(huart->Instance == USART2)
+    {
+        switch(receiveState) {
+            case 0:  // 等待包头
+                if(rxBuffer[0] == FRAME_HEADER) {
+                    receivedPackage.header = rxBuffer[0];
+                    receiveState = 1;
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 接收命令类型
+                }
+                else {
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 继续等待包头
+                }
+                break;
+                
+            case 1:  // 接收命令类型
+                receivedPackage.cmd_type = rxBuffer[0];
+                receiveState = 2;
+                HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 接收数据长度
+                break;
+                
+            case 2:  // 接收数据长度
+                receivedPackage.data_len = rxBuffer[0];
+                if(receivedPackage.data_len > 0 && receivedPackage.data_len <= 32) {
+                    receiveState = 3;
+                    dataCount = 0;
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 开始接收数据
+                }
+                else {
+                    receiveState = 0;  // 数据长度错误，重新等待包头
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);
+                }
+                break;
+                
+            case 3:  // 接收数据
+                receivedPackage.data[dataCount++] = rxBuffer[0];
+                if(dataCount >= receivedPackage.data_len) {
+                    receiveState = 4;
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 接收校验和
+                }
+                else {
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 继续接收数据
+                }
+                break;
+                
+            case 4:  // 接收校验和
+                receivedPackage.checksum = rxBuffer[0];
+                ProcessReceivedPackage(&receivedPackage);  // 处理接收到的完整数据包
+                receiveState = 0;  // 重置状态，等待下一个包
+                HAL_UART_Receive_IT(&huart2, rxBuffer, 1);
+                break;
+        }
+    }
+}
 /* USER CODE END 1 */
