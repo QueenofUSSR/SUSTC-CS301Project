@@ -78,6 +78,61 @@ extern const unsigned char gImage_back[6728];
 extern const unsigned char gImage_turnleft[6728];
 extern const unsigned char gImage_turnright[6728];
 extern const unsigned char gImage_stop[6728];
+
+void draw_map(uint8_t map[4][4]); //绘制地图，显示方格中的内容（障碍物、起始点、路径）
+void full_control(); //通过上位机完全控制小车移动的GUI。目前功能实现为：点击某一个方格，在屏幕上显示该方格的坐标
+void path_processing(); // 路径规划的GUI。目前功能为：点击某一个方格，在方格上显示一个障碍物
+void detect_obs(); //自动避障的GUI，目前功能为显示所有种类的图标
+
+////////////////////////////////////////////////////////////////////////// 路径规划相关定义
+//四个阶段
+typedef enum {
+    STAGE_SET_START,
+    STAGE_SET_END,
+    STAGE_SET_OBSTACLE,
+    STAGE_DRAW_PATH,
+	STAGE_FINISH
+} Stage;
+
+static Stage currentStage = STAGE_SET_START;
+
+//起点与终点坐标
+static int8_t start_r = -1,start_c = -1;
+static int8_t end_r = -1, end_c = -1;
+
+//屏幕底部预留一个高度区域，用来放两个按钮
+#define BTN_CONFIRM_X1 0
+#define BTN_CONFIRM_Y1 290
+#define BTN_CONFIRM_X2 100
+#define BTN_CONFIRM_Y2 310
+
+#define BTN_EDIT_X1 110
+#define BTN_EDIT_Y1 290
+#define BTN_EDIT_X2 210
+#define BTN_EDIT_Y2 310
+#define BTN_START_X1 0
+#define BTN_START_Y1 0
+#define BTN_START_X2 100
+#define BTN_START_Y2 20
+#define MAX_PATH_POINTS 10000
+//路径绘制数据结构
+typedef struct{
+	u16 x,y;
+} PixelPoint;
+
+static PixelPoint userLine[MAX_PATH_POINTS];
+static int userLineLen=0;
+static int drawingLine=0; // 是否正在画线中（按住屏幕）
+
+void reset_all(); //重置地图与数据
+void draw_buttons(); //Confirm 和 Edit 和 Start按钮
+void handle_confirm(); // Confirm按钮
+void handle_edit(); //Edit按钮
+int touch_in_rect(u16 tx, u16 ty, u16 x1, u16 y1, u16 x2, u16 y2); //检测是否点击按钮
+int screen_to_grid(int sx, int sy, int* gr, int* gc); //将屏幕坐标转为网格坐标
+void draw_dashed_trajectory(PixelPoint *userLine, int userLineLen, int onLength, int offLength); //画线函数
+
+//////////////////////////////////////////////////////////////////////////////
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -269,29 +324,265 @@ void full_control()
 	}
 }
 
+
+void draw_buttons()
+{
+    // Confirm按钮
+    LCD_DrawRectangle(BTN_CONFIRM_X1, BTN_CONFIRM_Y1, BTN_CONFIRM_X2, BTN_CONFIRM_Y2);
+    LCD_ShowString(BTN_CONFIRM_X1+10, BTN_CONFIRM_Y1+3, 80,16,16,(unsigned char*)"Confirm");
+    // Edit按钮
+    LCD_DrawRectangle(BTN_EDIT_X1, BTN_EDIT_Y1, BTN_EDIT_X2, BTN_EDIT_Y2);
+    LCD_ShowString(BTN_EDIT_X1+10, BTN_EDIT_Y1+3, 80,16,16,(unsigned char*)"Edit");
+    // Start按钮
+    LCD_DrawRectangle(BTN_START_X1, BTN_START_Y1, BTN_START_X2, BTN_START_Y2);
+    LCD_ShowString(BTN_START_X1+10, BTN_START_Y1+3, 80,16,16,(unsigned char*)"Start");
+}
+
 void path_processing()
 {
 	tp_dev.scan(0);
 	POINT_COLOR=BLACK;
-	unsigned char str[6];
-	sprintf(str, "mode%d", mode);
-	LCD_ShowString(180, 0, 200, 16, 16, str);
+	u8 touch_lock=0;
+	//显示当前状态
+	unsigned char stageInfo[20];
+	    switch(currentStage) {
+	    	case STAGE_SET_START:
+	    		sprintf((char*)stageInfo,"Set Start");
+	        break;
+	    	case STAGE_SET_END:
+	    		sprintf((char*)stageInfo,"Set End");
+	        break;
+	    	case STAGE_SET_OBSTACLE:
+	    		sprintf((char*)stageInfo,"Set Obstacles");
+	        break;
+	    	case STAGE_DRAW_PATH:
+	    		sprintf((char*)stageInfo,"Draw Path");
+	        break;
+	    	case STAGE_FINISH:
+	    		sprintf((char*)stageInfo,"Finish");
+	    }
+	LCD_ShowString(130, 25, 200,16,16,stageInfo);
+
+	unsigned char str[20];
+	sprintf(str, "mode%d %d %d %d %d", mode,start_r,start_c,end_r,end_c);
+	LCD_ShowString(130, 0, 200, 16, 16, str);
 	draw_map(map);
+	draw_buttons();
 	if(tp_dev.sta&TP_PRES_DOWN)
 	{
+		u16 tx = tp_dev.x[0];
+		u16 ty = tp_dev.y[0];
 		LCD_Clear(WHITE);
-		if(tp_dev.x[0]<lcddev.width&&tp_dev.y[0]<lcddev.height)
+
+		if(tx<lcddev.width&&ty<lcddev.height)
 		{
-			int touchRow = (tp_dev.y[0]-40)/59;
-			int touchCol = (tp_dev.x[0]-2)/59;
-			LCD_ShowNum(0, 0, touchRow, 1, 16);
-			LCD_ShowNum(20, 0, touchCol, 1, 16);
-			map[touchRow][touchCol] = OBSTACLE;
+			//按下Confirm
+			if(touch_in_rect(tx,ty,BTN_CONFIRM_X1,BTN_CONFIRM_Y1,BTN_CONFIRM_X2,BTN_CONFIRM_Y2)&&!touch_lock){
+				touch_lock=1; //手指抬起才会解锁
+				handle_confirm();
+			}
+			//按下Edit
+			else if(touch_in_rect(tx,ty,BTN_EDIT_X1,BTN_EDIT_Y1,BTN_EDIT_X2,BTN_EDIT_Y2)&&!touch_lock){
+				touch_lock=1;
+				handle_edit();
+			}
+			//按下Start
+			else if(touch_in_rect(tx,ty,BTN_START_X1,BTN_START_Y1,BTN_START_X2,BTN_START_Y2)&&!touch_lock){
+				//TODO:上位机将移动信息传输给小车
+			}
+			else{
+				if(currentStage==STAGE_SET_START){
+					int gr,gc;
+					if(screen_to_grid(tx,ty,&gr,&gc)){
+						if(start_r>=0&&start_c>=0){map[start_r][start_c]=EMPTY_BLOCK;}
+						start_r=gr;start_c=gc;
+						map[gr][gc]=START_POINT;
+					}
+				}
+				else if(currentStage==STAGE_SET_END){
+					int gr,gc;
+					if(screen_to_grid(tx,ty,&gr,&gc)){
+						if(end_r>=0&&end_c>=0){map[end_r][end_c]=EMPTY_BLOCK;}
+						//不能和起点重合
+						if(!(gr==start_r&&gc==start_c)){
+							end_r=gr;end_c=gc;
+							map[gr][gc]=END_POINT;
+						}
+					}
+				}
+				else if(currentStage==STAGE_SET_OBSTACLE){
+					int gr,gc;
+					if(screen_to_grid(tx,ty,&gr,&gc)){
+						if(map[gr][gc]==EMPTY_BLOCK&&map[gr][gc]!=START_POINT&&map[gr][gc]!=END_POINT){map[gr][gc]=OBSTACLE;}
+						else if(map[gr][gc]==OBSTACLE){map[gr][gc]=EMPTY_BLOCK;}
+					}
+				}
+				else if(currentStage==STAGE_DRAW_PATH){
+						if(userLineLen<MAX_PATH_POINTS){
+							if(userLineLen<2){
+								userLine[userLineLen].x=tx;
+								userLine[userLineLen].y=ty;
+								userLineLen++;
+							}
+							else{
+								if((userLine[userLineLen-1].x!=tx||userLine[userLineLen-1].y!=ty)&&(userLine[userLineLen-2].x!=tx||userLine[userLineLen-2].y!=ty)){
+									userLine[userLineLen].x=tx;
+									userLine[userLineLen].y=ty;
+									userLineLen++;
+								}
+							}
+						}
+						if(userLineLen>1){
+							draw_dashed_trajectory(userLine,userLineLen,8,4);
+						}
+				}
+			}
 		}
 	} else {
+		if(currentStage==STAGE_DRAW_PATH){
+			LCD_ShowString(0,0,200,16,16,(unsigned char*)"Path Recorded!");
+		}
 		delay_ms(10);
+		touch_lock=0;
 	}
 }
+
+int screen_to_grid(int sx, int sy, int* gr, int* gc)
+{
+    int row = (sy-40)/59;
+    int col = (sx-2)/59;
+    if(row>=0 && row<4 && col>=0 && col<4) {
+        *gr = row;
+        *gc = col;
+        return 1;
+    }
+    return 0;
+}
+
+
+void reset_all()
+{
+    for(int i=0;i<4;i++){
+        for(int j=0;j<4;j++){
+            map[i][j] = EMPTY_BLOCK;
+        }
+    }
+    start_r=-1;start_c=-1;
+    end_r=-1;end_c=-1;
+    userLineLen=0;
+    drawingLine=0;
+    currentStage=STAGE_SET_START;
+    LCD_Clear(WHITE);
+}
+void draw_dashed_trajectory(PixelPoint *userLine, int userLineLen, int onLength, int offLength)
+{
+	POINT_COLOR=RED;
+    int totalPattern = onLength + offLength;
+    static int patternIndex = 0;
+    int drawing = 0;
+    int segmentStartX = 0;
+    int segmentStartY = 0;
+    for(int i=0; i<userLineLen-1; i++) {
+        int x1 = userLine[i].x;
+        int y1 = userLine[i].y;
+        int x2 = userLine[i+1].x;
+        int y2 = userLine[i+1].y;
+        float dx = (float)(x2 - x1);
+        float dy = (float)(y2 - y1);
+        float length = sqrtf(dx*dx + dy*dy);
+        float ux = dx / length;
+        float uy = dy / length;
+
+        float dist = 0.0f;
+        while(dist < length) {
+            float curXf = x1 + ux * dist;
+            float curYf = y1 + uy * dist;
+            int curX = (int)(curXf+0.5f);
+            int curY = (int)(curYf+0.5f);
+            int posInCycle = patternIndex % totalPattern;
+            int nowDrawing = (posInCycle < onLength) ? 1 : 0;
+
+            if(nowDrawing && !drawing) {
+                drawing = 1;
+                segmentStartX = curX;
+                segmentStartY = curY;
+            } else if(!nowDrawing && drawing) {
+                drawing = 0;
+                LCD_DrawLine((u16)segmentStartX, (u16)segmentStartY, (u16)curX, (u16)curY);
+            }
+
+
+            dist += 1.0f;
+            patternIndex++;
+        }
+
+        if(drawing) {
+            LCD_DrawLine((u16)segmentStartX, (u16)segmentStartY, (u16)x2, (u16)y2);
+            drawing = 0;
+        }
+    }
+}
+int touch_in_rect(u16 tx, u16 ty, u16 x1,u16 y1,u16 x2,u16 y2)
+{
+    return (tx>=x1 && tx<=x2 && ty>=y1 && ty<=y2);
+}
+
+
+
+void handle_confirm()
+{
+    switch(currentStage) {
+    case STAGE_SET_START:
+        if(start_r>=0 && start_c>=0) {
+            currentStage=STAGE_SET_END;
+        }
+        break;
+    case STAGE_SET_END:
+        if(end_r>=0 && end_c>=0) {
+            currentStage=STAGE_SET_OBSTACLE;
+        }
+        break;
+    case STAGE_SET_OBSTACLE:
+        currentStage=STAGE_DRAW_PATH;
+        userLineLen=0;
+        memset(userLine,-1,sizeof(userLine));
+        break;
+    case STAGE_DRAW_PATH:
+        // TODO:路径绘制完成,确认后发送数据给小车
+        // 通过蓝牙发送 start_r,start_c,end_r,end_c,map中的障碍等信息
+        // 以及用户绘制的userLine路径数据
+        LCD_ShowString(0,25,200,16,16,(unsigned char*)"Path Confirmed!");
+        currentStage=STAGE_FINISH;
+        break;
+    case STAGE_FINISH:
+    	reset_all();
+    	break;
+    }
+}
+
+void handle_edit()
+{
+    // 根据当前阶段返回上一个阶段
+    switch(currentStage) {
+    case STAGE_SET_START:
+        break;
+    case STAGE_SET_END:
+        currentStage=STAGE_SET_START;
+        break;
+    case STAGE_SET_OBSTACLE:
+        currentStage=STAGE_SET_END;
+        break;
+    case STAGE_DRAW_PATH:
+        currentStage=STAGE_SET_OBSTACLE;
+        break;
+    case STAGE_FINISH:
+    	currentStage=STAGE_DRAW_PATH;
+    	LCD_Clear(WHITE);
+    	userLineLen=0;
+    	memset(userLine,-1,sizeof(userLine));
+    }
+}
+
 
 void detect_obs()
 {
