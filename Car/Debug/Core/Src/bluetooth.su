@@ -1,0 +1,15 @@
+../Core/Src/bluetooth.c:15:6:SetOperationMode	16	static
+../Core/Src/bluetooth.c:21:9:GetCurrentMode	4	static
+../Core/Src/bluetooth.c:26:6:UART_SendModeCmd	56	static
+../Core/Src/bluetooth.c:38:6:SendModeChangeAck	56	static
+../Core/Src/bluetooth.c:51:6:SendNavAck	48	static
+../Core/Src/bluetooth.c:64:6:UART_SendMotionCmd	56	static
+../Core/Src/bluetooth.c:77:6:UART_SendNavCmd	56	static
+../Core/Src/bluetooth.c:91:6:ProcessReceivedPackage	16	static
+../Core/Src/bluetooth.c:122:6:SendDistanceData	56	static
+../Core/Src/bluetooth.c:142:9:CalculateChecksum	24	static
+../Core/Src/bluetooth.c:152:5:VerifyChecksum	24	static
+../Core/Src/bluetooth.c:157:19:UART_SendPackage	56	static
+../Core/Src/bluetooth.c:175:6:ProcessMotionCmd	56	static
+../Core/Src/bluetooth.c:231:6:ProcessNavCmd	96	static
+../Core/Src/bluetooth.c:304:6:StopMotion	8	static

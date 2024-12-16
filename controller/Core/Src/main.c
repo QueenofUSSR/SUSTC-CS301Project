@@ -40,6 +40,8 @@
 //#include "remote.h" 红外遥控驱动
 
 #include "bluetooth.h"
+#include <string.h>
+#include <math.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,6 +64,8 @@ uint8_t map[4][4] = {
     {0, 0, 0, 0}
 };
 int mode;
+extern uint8_t current_mode;
+uint8_t change_mode;
 extern const unsigned char gImage_obs[6728];
 extern const unsigned char gImage_HLINE[6728];
 extern const unsigned char gImage_VLINE[6728];
@@ -123,6 +127,9 @@ typedef struct{
 static PixelPoint userLine[MAX_PATH_POINTS];
 static int userLineLen=0;
 static int drawingLine=0; // 是否正在画线中（按住屏幕）
+u8 grid_path[32]; //规划路径，以格子为单位
+u8 grid_len=0;
+u8 nav_pkt=0; //小车是否接收到路径规划信息
 
 void reset_all(); //重置地图与数据
 void draw_buttons(); //Confirm 和 Edit 和 Start按钮
@@ -340,6 +347,7 @@ void draw_buttons()
 
 void path_processing()
 {
+
 	tp_dev.scan(0);
 	POINT_COLOR=BLACK;
 	u8 touch_lock=0;
@@ -388,7 +396,10 @@ void path_processing()
 			}
 			//按下Start
 			else if(touch_in_rect(tx,ty,BTN_START_X1,BTN_START_Y1,BTN_START_X2,BTN_START_Y2)&&!touch_lock){
-				//TODO:上位机将移动信息传输给小车
+				nav_pkt=0;
+				UART_SendNavCmd(MODE_AUTO_NAV,grid_path,grid_len);
+				delay_ms(500);
+				while(!nav_pkt){UART_SendNavCmd(MODE_AUTO_NAV,grid_path,grid_len);delay_ms(500);}
 			}
 			else{
 				if(currentStage==STAGE_SET_START){
@@ -423,6 +434,7 @@ void path_processing()
 								userLine[userLineLen].x=tx;
 								userLine[userLineLen].y=ty;
 								userLineLen++;
+
 							}
 							else{
 								if((userLine[userLineLen-1].x!=tx||userLine[userLineLen-1].y!=ty)&&(userLine[userLineLen-2].x!=tx||userLine[userLineLen-2].y!=ty)){
@@ -430,6 +442,13 @@ void path_processing()
 									userLine[userLineLen].y=ty;
 									userLineLen++;
 								}
+							}
+						}
+						int gr,gc;
+						if(screen_to_grid(tx,ty,&gr,&gc)){
+							if(grid_path[grid_len-1]!=gc||grid_path[grid_len-2]!=gr){
+								grid_path[grid_len++]=gr;
+								grid_path[grid_len++]=gc;
 							}
 						}
 						if(userLineLen>1){
@@ -472,6 +491,7 @@ void reset_all()
     userLineLen=0;
     drawingLine=0;
     currentStage=STAGE_SET_START;
+    grid_len=0;
     LCD_Clear(WHITE);
 }
 void draw_dashed_trajectory(PixelPoint *userLine, int userLineLen, int onLength, int offLength)
@@ -544,8 +564,10 @@ void handle_confirm()
         break;
     case STAGE_SET_OBSTACLE:
         currentStage=STAGE_DRAW_PATH;
-        userLineLen=0;
+        userLineLen=0;grid_len=0;
         memset(userLine,-1,sizeof(userLine));
+        memset(grid_path,0,sizeof(grid_path));
+        grid_path[grid_len++]=start_r;grid_path[grid_len++]=start_c; //设置起点
         break;
     case STAGE_DRAW_PATH:
         // TODO:路径绘制完成,确认后发送数据给小车
@@ -553,6 +575,9 @@ void handle_confirm()
         // 以及用户绘制的userLine路径数据
         LCD_ShowString(0,25,200,16,16,(unsigned char*)"Path Confirmed!");
         currentStage=STAGE_FINISH;
+        if(grid_path[grid_len-1]!=end_c||grid_path[grid_len-2]!=end_r){
+        	grid_path[grid_len++]=end_r;grid_path[grid_len++]=end_c;//设置终点
+        }
         break;
     case STAGE_FINISH:
     	reset_all();
@@ -578,8 +603,9 @@ void handle_edit()
     case STAGE_FINISH:
     	currentStage=STAGE_DRAW_PATH;
     	LCD_Clear(WHITE);
-    	userLineLen=0;
+    	userLineLen=0;grid_len=0;
     	memset(userLine,-1,sizeof(userLine));
+    	memset(grid_path,0,sizeof(grid_path));
     }
 }
 
@@ -646,7 +672,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  Stm32_Clock_Init(RCC_PLL_MUL9);   	//设置时钟,72M
+  	Stm32_Clock_Init(RCC_PLL_MUL9);   	//设置时钟,72M
 	delay_init(72);               		//初始化延时函�?
 //	uart_init(115200);					//初始化串�?
 //	usmart_dev.init(84); 		  	  	//初始化USMART
@@ -669,7 +695,9 @@ int main(void)
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_UART_Receive_IT(&huart2, rxBuffer, 1);
   mode = FULL_CONTROL;
+  uint8_t flag = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -678,19 +706,28 @@ int main(void)
   	{
   		u8 key;
   		key=KEY_Scan(0);
+  		change_mode=0;
+  		if(flag){ //flag为1，发送模式切换信号
+  			UART_SendModeCmd(mode);
+  			delay_ms(500);
+  			while(!change_mode){UART_SendModeCmd(mode);delay_ms(500);}
+  			flag=0;
+  		}
 
   		switch(mode)
   		{
   		case FULL_CONTROL:full_control(); break;
   		case PATH_PROCESSING:path_processing(); break;
   		case DETECT_OBS:detect_obs(); break;
+  		case TRACK_LINE:break;
   		}
 		SetOperationMode(mode);
 
   		if(key==WKUP_PRES)	//KEY0按下,切换模式
   		{
+  			flag=1; // 模式切换标志位
   			mode++;
-  			mode%=3;
+  			mode%=4;
   			for(int i=0;i<4;i++){
   				for(int j=0;j<4;j++){
   					map[i][j] = EMPTY_BLOCK;

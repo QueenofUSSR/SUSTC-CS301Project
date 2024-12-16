@@ -18,7 +18,7 @@
 #define MODE_MANUAL    0x01  // Manual control mode
 #define MODE_AUTO_NAV  0x02  // Auto navigation mode
 #define MODE_OBS_NAV   0x03  // Obs navigation mode
-#define MODE_LINE_TRACK 0x04 // Line tracking mode
+#define MODE_LINE_TRACK 0x00 // Line tracking mode
 
 // Motion Commands (1 byte)
 #define MOTION_FORWARD  0x01
@@ -28,6 +28,10 @@
 #define MOTION_TURN_L   0x05
 #define MOTION_TURN_R   0x06
 #define MOTION_STOP     0x07
+
+//ACK Types(1 byte)
+#define ACK_MC 0x01
+#define ACK_NAV_PKT 0x02
 
 // Package Structure (for sending)
 typedef struct {
@@ -45,5 +49,7 @@ uint8_t CalculateChecksum(UART_Package_t* pkg);
 HAL_StatusTypeDef UART_SendPackage(UART_Package_t* pkg);
 float HandleDistanceData(UART_Package_t* pkg);
 void ProcessReceivedPackage(UART_Package_t* pkg);
-
+void UART_SendModeCmd(uint8_t mode);
+void UART_SendMotionCmd(uint8_t motion_type, uint8_t speed);
+void UART_SendNavCmd(uint8_t nav_mode, uint8_t* path_data, uint8_t path_len);
 #endif /* __BLUETOOTH_H */ 

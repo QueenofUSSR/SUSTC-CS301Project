@@ -29,6 +29,10 @@
 #define MOTION_TURN_R   0x06
 #define MOTION_STOP     0x07
 
+//ACK Types(1 byte)
+#define ACK_MC 0x01
+#define ACK_NAV_PKT 0x02
+
 // Package Structure (for sending)
 typedef struct {
     uint8_t header;     // Frame header (0xAA)
@@ -47,5 +51,9 @@ uint8_t GetCurrentMode(void);
 void SetOperationMode(uint8_t mode);
 uint8_t CalculateChecksum(UART_Package_t* pkg);
 HAL_StatusTypeDef UART_SendPackage(UART_Package_t* pkg);
+void SendModeChangeAck(uint8_t mode);
+void SendNavAck(void);
+int VerifyChecksum(UART_Package_t* pkg);
+void SendDistanceData(float distance);
 
 #endif /* __BLUETOOTH_H */ 

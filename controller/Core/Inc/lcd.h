@@ -52,9 +52,10 @@ extern u16  BACK_COLOR; //������ɫ.Ĭ��Ϊ��ɫ
 #define START_POINT 8
 #define END_POINT 9
 
-#define FULL_CONTROL 0
-#define PATH_PROCESSING 1
-#define DETECT_OBS 2
+#define FULL_CONTROL 1
+#define PATH_PROCESSING 2
+#define DETECT_OBS 3
+#define TRACK_LINE 0
 
 //-----------------LCD�˿ڶ���---------------- 
 #define LCD_LED PCout(10)               //LCD����       PC10

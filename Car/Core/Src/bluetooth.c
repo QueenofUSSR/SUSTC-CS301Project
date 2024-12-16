@@ -41,11 +41,23 @@ void SendModeChangeAck(uint8_t mode) {
     pkg.header = FRAME_HEADER;
     pkg.cmd_type = CMD_STATUS;
     pkg.data_len = 2;
-    pkg.data[0] = 0x01; // Status type: mode change ack
+    pkg.data[0] = ACK_MC; // Status type: mode change ack
     pkg.data[1] = mode; // New mode
     pkg.checksum = CalculateChecksum(&pkg);
     
     UART_SendPackage(&pkg);
+}
+
+void SendNavAck(void){
+	UART_Package_t pkg;
+
+	pkg.header = FRAME_HEADER;
+	pkg.cmd_type = CMD_STATUS;
+	pkg.data_len = 1;
+	pkg.data[0] = ACK_NAV_PKT; // Status type: Auto navigation packet ack
+	pkg.checksum = CalculateChecksum(&pkg);
+
+	UART_SendPackage(&pkg);
 }
 
 // Functions for Controller Board
@@ -89,7 +101,7 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
             break;
         case CMD_NAV:
             if (current_mode == MODE_AUTO_NAV) {
-                // ProcessNavCmd(pkg->data[0], &pkg->data[1], pkg->data_len - 1);
+                ProcessNavCmd(pkg->data[0], &pkg->data[1], pkg->data_len - 1);
             }
             break;
         case CMD_MODE:
@@ -213,6 +225,78 @@ void ProcessMotionCmd(uint8_t motion_type) {
     // Send confirmation package
     UART_SendPackage(&pkg);
 }
+void ProcessNavCmd(uint8_t nav_mode, uint8_t* path_data, uint8_t path_len){
+		UART_Package_t pkg;
+
+	    pkg.header = FRAME_HEADER;
+	    pkg.cmd_type = CMD_NAV;
+	    pkg.data_len = path_len + 1;
+	    pkg.data[0] = nav_mode;
+	    memcpy(&pkg.data[1], path_data, path_len);
+	    pkg.checksum = CalculateChecksum(&pkg);
+
+	    if (nav_mode==MODE_AUTO_NAV){
+	    	uint8_t start_c=path_data[1];
+	    	uint8_t end_c=path_data[path_len-1];
+	    	uint8_t point_count=path_len/2;
+	    	// 根据起点终点决定初始朝向
+	    	// 如果起点在终点左边，朝右；如果在终点右边，朝左
+	    	if(point_count<2){
+	    		SendNavAck();
+	    		return;
+	    	}
+	    	SendNavAck();
+	    	int facing_right=1;
+	    	if(start_c > end_c) {
+	    		facing_right = 0; // 朝左
+	    	}
+	    	for(int i=0;i<point_count-1;i++){
+	    		uint8_t r1 = path_data[i*2];
+	    		uint8_t c1 = path_data[i*2 + 1];
+	    		uint8_t r2 = path_data[(i+1)*2];
+	    		uint8_t c2 = path_data[(i+1)*2 + 1];
+	    		int dr=r2-r1;
+	    		int dc=c2-c1;
+	    			if(dc>0){
+	    				for(int step=0;step<dc;step++){
+	    					if(facing_right) moveForward(&htim4);
+	    					else moveBackward(&htim4);
+	    					HAL_Delay(700);
+	    					motorBreak();
+	    				}
+	    			}
+	    			else if(dc<0){
+	    				for(int step=0;step<(-dc);step++){
+	    					if(facing_right) moveBackward(&htim4);
+	    					else moveForward(&htim4);
+	    					HAL_Delay(700);
+	    					motorBreak();
+	    				}
+	    			}
+	    			if(dr>0){
+	    				for(int step=0;step<dr;step++){
+	    					if(facing_right) moveRight(&htim4);
+	    					else moveLeft(&htim4);
+	    					HAL_Delay(700);
+	    					motorBreak();
+	    				}
+	    			}
+	    			else if(dr<0){
+	    				for(int step=0;step<(-dr);step++){
+	    					if(facing_right) moveLeft(&htim4);
+	    					else moveRight(&htim4);
+	    					HAL_Delay(700);
+	    					motorBreak();
+	    				}
+	    			}
+	    			HAL_Delay(1000);
+	    	}
+	    }
+	    else {
+	    	return;
+	    }
+}
+
 
 void StopMotion(void) {
     HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_RESET);

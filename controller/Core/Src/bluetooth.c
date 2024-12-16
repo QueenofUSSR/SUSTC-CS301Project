@@ -4,11 +4,14 @@
 #include "bluetooth.h"
 #include "gpio.h"
 #include "lcd.h"
+#include <stdio.h>
 
 extern UART_HandleTypeDef huart2;
+extern uint8_t change_mode;
+extern uint8_t nav_pkt;
 
 // Mode management
-static uint8_t current_mode = MODE_MANUAL;
+uint8_t current_mode = MODE_MANUAL;
 
 void SetOperationMode(uint8_t mode) {
     if (mode <= MODE_LINE_TRACK) {
@@ -132,6 +135,23 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
         case CMD_DISTANCE:
             LCD_ShowNum(0, 10, HandleDistanceData(pkg), 1, 16);
             break;
+        case CMD_STATUS:
+        	switch(pkg->data[0]){
+        	case ACK_MC:
+        		uint8_t mode=pkg->data[1];
+        		char temp[20];
+        		sprintf(temp,"Mode changed to %d",mode);
+        		LCD_ShowString(0,25,200,16,16,temp);
+        		change_mode=1;
+        		break;
+        	case ACK_NAV_PKT:
+        		LCD_ShowString(0,25,200,16,16,(unsigned char*)"Navigation Data Received");
+        		nav_pkt=1;
+        		break;
+        	default:
+        		break;
+
+        	}
         default:
             break;
     }
