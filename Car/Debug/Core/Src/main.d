@@ -28,7 +28,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/i2c.h ../Core/Inc/main.h ../Core/Inc/tim.h \
  ../Core/Inc/usart.h ../Core/Inc/gpio.h ../Core/Inc/motor.h \
  ../Core/Inc/Server.h ../Core/Inc/UltrasonicWave.h ../Core/Inc/Server.h \
- ../Core/Inc/bluetooth.h ../Core/Inc/MPU6050.h
+ ../Core/Inc/bluetooth.h ../Core/Inc/MPU6050.h \
+ ../Core/Inc/infraredTrack.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F1xx_HAL_Driver/Inc/stm32f1xx_hal.h:
 ../Core/Inc/stm32f1xx_hal_conf.h:
@@ -67,3 +68,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/Server.h:
 ../Core/Inc/bluetooth.h:
 ../Core/Inc/MPU6050.h:
+../Core/Inc/infraredTrack.h:

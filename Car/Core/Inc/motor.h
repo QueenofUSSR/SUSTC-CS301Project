@@ -112,6 +112,12 @@ void moveLeft();
 void moveRight();
 void moveTurnLeft();
 void moveTurnRight();
+void moveForwardslow();
+void moveBackwardslow();
+void moveLeftslow();
+void moveRightslow();
+void moveTurnLeftslow();
+void moveTurnRightslow();
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

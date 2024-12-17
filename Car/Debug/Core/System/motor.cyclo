@@ -7,3 +7,9 @@
 ../Core/System/motor.c:303:6:moveRight	1
 ../Core/System/motor.c:314:6:moveTurnLeft	1
 ../Core/System/motor.c:325:6:moveTurnRight	1
+../Core/System/motor.c:337:6:moveForwardslow	1
+../Core/System/motor.c:348:6:moveBackwardslow	1
+../Core/System/motor.c:359:6:moveLeftslow	1
+../Core/System/motor.c:370:6:moveRightslow	1
+../Core/System/motor.c:381:6:moveTurnLeftslow	1
+../Core/System/motor.c:392:6:moveTurnRightslow	1

@@ -30,6 +30,7 @@
 #include "UltrasonicWave.h"
 #include "bluetooth.h"
 #include "MPU6050.h"
+#include "infraredTrack.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,27 +102,34 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
   motorInit();
+  motorBreak();
   int ret = 0;
   do{
 	  ret = MPU6050_DMP_init();
   } while(ret);	//初始化mpu 直到初始化完�?
   HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // Start interrupt receive
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_RESET);
-	  HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_RESET);
-	  motorBreak();
-    uint8_t distance = (uint8_t)front_detection();
-    SendDistanceData(front_detection());
-    HAL_Delay(2000);
+//	  HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_RESET);
+//	  HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_RESET);
+//	  motorBreak();
+//    uint8_t distance = (uint8_t)front_detection();
+//    SendDistanceData(front_detection());
+//    HAL_Delay(2000);
+
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+//	  MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);
+
+	  SearchRun();
+
   }
   /* USER CODE END 3 */
 }

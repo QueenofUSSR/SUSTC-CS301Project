@@ -36,7 +36,7 @@
 
 MPU6050:
 
-`MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);`获取欧拉角
+`MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);`获取欧拉角（yaw角左正右负）
 
 #### Controlller
 

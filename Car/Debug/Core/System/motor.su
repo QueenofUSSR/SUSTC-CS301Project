@@ -7,3 +7,9 @@
 ../Core/System/motor.c:303:6:moveRight	16	static
 ../Core/System/motor.c:314:6:moveTurnLeft	16	static
 ../Core/System/motor.c:325:6:moveTurnRight	16	static
+../Core/System/motor.c:337:6:moveForwardslow	16	static
+../Core/System/motor.c:348:6:moveBackwardslow	16	static
+../Core/System/motor.c:359:6:moveLeftslow	16	static
+../Core/System/motor.c:370:6:moveRightslow	16	static
+../Core/System/motor.c:381:6:moveTurnLeftslow	16	static
+../Core/System/motor.c:392:6:moveTurnRightslow	16	static
