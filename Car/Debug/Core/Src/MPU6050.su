@@ -1,0 +1,5 @@
+../Core/Src/MPU6050.c:28:23:inv_row_2_scale	24	static
+../Core/Src/MPU6050.c:49:23:inv_orientation_matrix_to_scalar	24	static
+../Core/Src/MPU6050.c:71:12:run_self_test	48	static
+../Core/Src/MPU6050.c:100:5:MPU6050_DMP_init	16	static
+../Core/Src/MPU6050.c:170:5:MPU6050_DMP_Get_Date	104	static

@@ -60,8 +60,8 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart2;
-extern uint8_t rxBuffer[38];
 /* USER CODE BEGIN EV */
+extern uint8_t rxBuffer[38];
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -217,34 +217,6 @@ void EXTI1_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles EXTI line4 interrupt.
-  */
-void EXTI4_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI4_IRQn 0 */
-
-  /* USER CODE END EXTI4_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(K1_Pin);
-  /* USER CODE BEGIN EXTI4_IRQn 1 */
-
-  /* USER CODE END EXTI4_IRQn 1 */
-}
-
-/**
-  * @brief This function handles EXTI line[9:5] interrupts.
-  */
-void EXTI9_5_IRQHandler(void)
-{
-  /* USER CODE BEGIN EXTI9_5_IRQn 0 */
-
-  /* USER CODE END EXTI9_5_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(K2_Pin);
-  /* USER CODE BEGIN EXTI9_5_IRQn 1 */
-
-  /* USER CODE END EXTI9_5_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM4 global interrupt.
   */
 void TIM4_IRQHandler(void)
@@ -277,27 +249,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	HAL_Delay(10);
 	switch(GPIO_Pin) {
-	case K1_Pin:
-		while(HAL_GPIO_ReadPin(K1_GPIO_Port, K1_Pin) == GPIO_PIN_RESET){
-			HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_SET);
-			moveTurnLeft(&htim4);
-		}
-		break;
-
-	case K2_Pin:
-		while(HAL_GPIO_ReadPin(K2_GPIO_Port, K2_Pin) == GPIO_PIN_RESET) {
-			HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_SET);
-			moveTurnRight(&htim4);
-		}
-		break;
-
-	case K3_Pin:
-		while(HAL_GPIO_ReadPin(K3_GPIO_Port, K3_Pin) == GPIO_PIN_SET) {
-			HAL_Delay(500);
-			HAL_GPIO_TogglePin(L1_GPIO_Port, L1_Pin);
-			HAL_GPIO_TogglePin(L2_GPIO_Port, L2_Pin);
-		}
-		break;
 
 	case ECHO_Pin:
 			TIM2->CNT = 0;
@@ -347,10 +298,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 if(receivedPackage.data_len > 0 && receivedPackage.data_len <= 32) {
                     receiveState = 3;
                     dataCount = 0;
-                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 开始接收数据
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // �??始接收数�??
                 }
                 else {
-                    receiveState = 0;  // 数据长度错误，重新等待包头
+                    receiveState = 0;  // 数据长度错误，重新等待包�??
                     HAL_UART_Receive_IT(&huart2, rxBuffer, 1);
                 }
                 break;
@@ -359,17 +310,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
                 receivedPackage.data[dataCount++] = rxBuffer[0];
                 if(dataCount >= receivedPackage.data_len) {
                     receiveState = 4;
-                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 接收校验和
+                    HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 接收校验�??
                 }
                 else {
                     HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // 继续接收数据
                 }
                 break;
                 
-            case 4:  // 接收校验和
+            case 4:  // 接收校验�??
                 receivedPackage.checksum = rxBuffer[0];
-                ProcessReceivedPackage(&receivedPackage);  // 处理接收到的完整数据包
-                receiveState = 0;  // 重置状态，等待下一个包
+                ProcessReceivedPackage(&receivedPackage);  // 处理接收到的完整数据�??
+                receiveState = 0;  // 重置状�?�，等待下一个包
                 HAL_UART_Receive_IT(&huart2, rxBuffer, 1);
                 break;
         }

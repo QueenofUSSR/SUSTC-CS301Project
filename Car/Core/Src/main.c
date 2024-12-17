@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "i2c.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -28,6 +29,7 @@
 #include "Server.h"
 #include "UltrasonicWave.h"
 #include "bluetooth.h"
+#include "MPU6050.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -51,6 +53,7 @@
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 uint8_t rxBuffer[38];  // Add receive buffer
+float roll, pitch, yaw;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -84,9 +87,6 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
-
   /* USER CODE BEGIN SysInit */
 
   /* USER CODE END SysInit */
@@ -97,9 +97,14 @@ int main(void)
   MX_TIM2_Init();
   MX_TIM5_Init();
   MX_USART2_UART_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
   motorInit();
+  int ret = 0;
+  do{
+	  ret = MPU6050_DMP_init();
+  } while(ret);	//初始化mpu 直到初始化完�?
   HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // Start interrupt receive
   /* USER CODE END 2 */
 
@@ -113,6 +118,7 @@ int main(void)
     uint8_t distance = (uint8_t)front_detection();
     SendDistanceData(front_detection());
     HAL_Delay(2000);
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */

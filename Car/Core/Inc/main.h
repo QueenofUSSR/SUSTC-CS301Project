@@ -57,19 +57,13 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define LEFT_Pin GPIO_PIN_13
+#define LEFT_GPIO_Port GPIOC
 #define TRIG_Pin GPIO_PIN_0
 #define TRIG_GPIO_Port GPIOC
 #define ECHO_Pin GPIO_PIN_1
 #define ECHO_GPIO_Port GPIOC
 #define ECHO_EXTI_IRQn EXTI1_IRQn
-#define K1_Pin GPIO_PIN_4
-#define K1_GPIO_Port GPIOC
-#define K1_EXTI_IRQn EXTI4_IRQn
-#define K2_Pin GPIO_PIN_5
-#define K2_GPIO_Port GPIOC
-#define K2_EXTI_IRQn EXTI9_5_IRQn
-#define L1_Pin GPIO_PIN_0
-#define L1_GPIO_Port GPIOB
 #define LEFT_MOTOR_GO_Pin GPIO_PIN_12
 #define LEFT_MOTOR_GO_GPIO_Port GPIOB
 #define LEFT2_MOTOR_GO_Pin GPIO_PIN_13
@@ -78,6 +72,10 @@ void Error_Handler(void);
 #define RIGHT_MOTOR_GO_GPIO_Port GPIOB
 #define RIGHT2_MOTOR_GO_Pin GPIO_PIN_15
 #define RIGHT2_MOTOR_GO_GPIO_Port GPIOB
+#define RIGHT_Pin GPIO_PIN_11
+#define RIGHT_GPIO_Port GPIOC
+#define MID_Pin GPIO_PIN_12
+#define MID_GPIO_Port GPIOC
 #define L2_Pin GPIO_PIN_2
 #define L2_GPIO_Port GPIOD
 #define LEFT_MOTOR_PWM_Pin GPIO_PIN_6

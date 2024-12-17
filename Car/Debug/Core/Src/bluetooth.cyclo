@@ -6,10 +6,10 @@
 ../Core/Src/bluetooth.c:64:6:UART_SendMotionCmd	1
 ../Core/Src/bluetooth.c:77:6:UART_SendNavCmd	1
 ../Core/Src/bluetooth.c:91:6:ProcessReceivedPackage	8
-../Core/Src/bluetooth.c:122:6:SendDistanceData	1
-../Core/Src/bluetooth.c:142:9:CalculateChecksum	2
-../Core/Src/bluetooth.c:152:5:VerifyChecksum	2
-../Core/Src/bluetooth.c:157:19:UART_SendPackage	1
-../Core/Src/bluetooth.c:175:6:ProcessMotionCmd	8
-../Core/Src/bluetooth.c:231:6:ProcessNavCmd	17
-../Core/Src/bluetooth.c:304:6:StopMotion	1
+../Core/Src/bluetooth.c:119:6:SendDistanceData	1
+../Core/Src/bluetooth.c:139:9:CalculateChecksum	2
+../Core/Src/bluetooth.c:149:5:VerifyChecksum	2
+../Core/Src/bluetooth.c:154:19:UART_SendPackage	1
+../Core/Src/bluetooth.c:172:6:ProcessMotionCmd	8
+../Core/Src/bluetooth.c:228:6:ProcessNavCmd	17
+../Core/Src/bluetooth.c:301:6:StopMotion	1

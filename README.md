@@ -32,6 +32,12 @@
 
 `stm32fxx.it.c` 中接收端接受到反弹的超声波后，计数并计算距离
 
+
+
+MPU6050:
+
+`MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);`获取欧拉角
+
 #### Controlller
 
 - `void draw_map(uint8_t map[4][4])`：绘制地图，显示方格中的内容（障碍物、起讫点、路径）

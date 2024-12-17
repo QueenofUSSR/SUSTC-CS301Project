@@ -64,8 +64,8 @@ all: main-build
 main-build: Car.elf secondary-outputs
 
 # Tool invocations
-Car.elf Car.map: $(OBJS) $(USER_OBJS) D:\STM32\SUSTC-CS301Project\Car\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Car.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\STM32\SUSTC-CS301Project\Car\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Car.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Car.elf Car.map: $(OBJS) $(USER_OBJS) D:\CodeFile\Java&dsaa\dsaa\Project\SUSTC-CS301Project\Car\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Car.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\CodeFile\Java&dsaa\dsaa\Project\SUSTC-CS301Project\Car\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Car.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
