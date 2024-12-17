@@ -1,0 +1,16 @@
+# 忽略操作系统生成的文件  
+.DS_Store  
+Thumbs.db  
+
+# 忽略编译生成的文件  
+*.o  
+*.out  
+bin/  
+obj/  
+
+# 忽略环境配置文件  
+.env  
+*.log  
+
+# 忽略某些目录  
+.metadata
