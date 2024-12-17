@@ -10,6 +10,19 @@
 `moveRight(&htim4)`:右平移
 `moveTurnLeft(&htim4)`:左转
 `moveTurnRight(&htim4)`:右转
+
+`TurnLeft_angle(TIM_HandleTypeDef *htim, **int** angle)`: 左转`angle`度
+
+`TurnRight_angle(TIM_HandleTypeDef *htim, **int** angle)`: 右转`angle`度
+
+---
+
+左右转目标度数函数目前是基于小车初始位置的角度偏置（可我写的逻辑是基于目前位置的角度偏置，debug中）
+
+---
+
+
+
 其他 user code 都在 `main.c` 和 `stm32fxx.it.c` 中
 
 

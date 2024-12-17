@@ -118,6 +118,8 @@ void moveLeftslow();
 void moveRightslow();
 void moveTurnLeftslow();
 void moveTurnRightslow();
+void TurnLeft_angle(TIM_HandleTypeDef *htim, int angle);
+void TurnRight_angle(TIM_HandleTypeDef *htim, int angle);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

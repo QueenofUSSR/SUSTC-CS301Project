@@ -1,4 +1,5 @@
 #include "motor.txt"
+#include "MPU6050.h"
 
 extern TIM_HandleTypeDef htim4;
 
@@ -401,3 +402,52 @@ void moveTurnRightslow(TIM_HandleTypeDef *htim)
 	__HAL_TIM_SET_COMPARE(htim, TIM_CHANNEL_4, 3600);//L1满速前进
 }
 
+void TurnLeft_angle(TIM_HandleTypeDef *htim, int angle)
+{
+	float roll_start, pitch_start, yaw_start;
+	float roll_current, pitch_current, yaw_current;
+	MPU6050_DMP_Get_Date(&pitch_start, &roll_start, &yaw_start);
+
+	float yaw_target = yaw_start + angle;
+	if (yaw_target >= 180.0f) yaw_target -= 360.0f;
+
+	moveTurnLeft(&htim);
+
+	while(1)
+	{
+		MPU6050_DMP_Get_Date(&pitch_current, &roll_current, &yaw_current);
+
+		float angleDiff = yaw_target - yaw_current;
+		if(angleDiff > -5 && angleDiff < 15){
+			break;
+		}
+	}
+
+	motorBreak();
+
+}
+
+void TurnRight_angle(TIM_HandleTypeDef *htim, int angle)
+{
+	float roll_start, pitch_start, yaw_start;
+	float roll_current, pitch_current, yaw_current;
+	MPU6050_DMP_Get_Date(&pitch_start, &roll_start, &yaw_start);
+
+	float yaw_target = yaw_start - angle;
+	if (yaw_target < -180.0f) yaw_target += 360.0f;
+
+	moveTurnRight(&htim);
+
+	while(1)
+	{
+		MPU6050_DMP_Get_Date(&pitch_current, &roll_current, &yaw_current);
+
+		float angleDiff = yaw_target - yaw_current;
+		if(angleDiff > -15 && angleDiff < 5){
+			break;
+		}
+	}
+
+	motorBreak();
+
+}

@@ -128,7 +128,11 @@ int main(void)
     /* USER CODE BEGIN 3 */
 //	  MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);
 
-	  SearchRun();
+//	  SearchRun();
+	  TurnRight_angle(&htim4, 90);
+	  HAL_Delay(5000);
+	  TurnRight_angle(&htim4, 30);
+	  HAL_Delay(5000);
 
   }
   /* USER CODE END 3 */
