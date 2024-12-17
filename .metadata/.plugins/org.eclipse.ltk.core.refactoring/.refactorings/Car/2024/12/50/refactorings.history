@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;car/Car.ioc&apos; to &apos;car.ioc&apos;" description="Rename resource &apos;Car.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Car.ioc" name="car.ioc" stamp="1734018449441" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;car/Car.ioc&apos; to &apos;car.ioc&apos;" description="Rename resource &apos;Car.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Car.ioc" name="car.ioc" stamp="1734143601394" updateReferences="true"/>
-</session>
