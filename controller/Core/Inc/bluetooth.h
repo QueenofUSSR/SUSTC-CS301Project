@@ -13,6 +13,7 @@
 #define CMD_NAV        0x03  // Navigation control
 #define CMD_STATUS     0x04  // Status information
 #define CMD_MODE       0x05  // Mode switch command
+#define CMD_ENV_DETECT 0x06  // Environment detection command
 
 // Operation Modes
 #define MODE_MANUAL    0x01  // Manual control mode
@@ -52,4 +53,5 @@ void ProcessReceivedPackage(UART_Package_t* pkg);
 void UART_SendModeCmd(uint8_t mode);
 void UART_SendMotionCmd(uint8_t motion_type, uint8_t speed);
 void UART_SendNavCmd(uint8_t nav_mode, uint8_t* path_data, uint8_t path_len);
+void ProcessEnvDetectCmd(uint8_t location, uint8_t env_type);
 #endif /* __BLUETOOTH_H */ 

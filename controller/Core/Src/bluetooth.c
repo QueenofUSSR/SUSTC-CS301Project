@@ -10,8 +10,19 @@ extern UART_HandleTypeDef huart2;
 extern uint8_t change_mode;
 extern uint8_t nav_pkt;
 
+uint8_t CalculateChecksum(UART_Package_t* pkg) {
+    uint8_t sum = 0;
+    sum += pkg->cmd_type;
+    sum += pkg->data_len;
+    for(int i = 0; i < pkg->data_len; i++) {
+        sum += pkg->data[i];
+    }
+    return sum;
+}
+
 // Mode management
 uint8_t current_mode = MODE_MANUAL;
+
 
 void SetOperationMode(uint8_t mode) {
     if (mode <= MODE_LINE_TRACK) {
@@ -95,17 +106,6 @@ void SendDistanceData(float distance) {
     UART_SendPackage(&pkg);
 }
 
-// Utility Functions
-uint8_t CalculateChecksum(UART_Package_t* pkg) {
-    uint8_t sum = 0;
-    sum += pkg->cmd_type;
-    sum += pkg->data_len;
-    for(int i = 0; i < pkg->data_len; i++) {
-        sum += pkg->data[i];
-    }
-    return sum;
-}
-
 int VerifyChecksum(UART_Package_t* pkg) {
     uint8_t sum = CalculateChecksum(pkg);
     return (sum == pkg->checksum) ? 0 : -1;
@@ -148,6 +148,9 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
         		LCD_ShowString(0,25,200,16,16,(unsigned char*)"Navigation Data Received");
         		nav_pkt=1;
         		break;
+            case CMD_ENV_DETECT:
+                ProcessEnvDetectCmd(pkg->data[0], pkg->data[1]);
+                break;
         	default:
         		break;
 
@@ -155,6 +158,10 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
         default:
             break;
     }
+}
+
+void ProcessEnvDetectCmd(uint8_t location, uint8_t env_type){
+	// TODO: Implement environment detection logic
 }
 
 float HandleDistanceData(UART_Package_t* pkg) {
