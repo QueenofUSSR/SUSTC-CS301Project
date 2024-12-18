@@ -54,7 +54,7 @@
 extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 uint8_t rxBuffer[38];  // Add receive buffer
-float roll, pitch, yaw;
+char direction;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -99,6 +99,7 @@ int main(void)
   MX_TIM5_Init();
   MX_USART2_UART_Init();
   MX_I2C2_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_PWM_Start(&htim5, TIM_CHANNEL_1);
   motorInit();
@@ -106,7 +107,7 @@ int main(void)
   int ret = 0;
   do{
 	  ret = MPU6050_DMP_init();
-  } while(ret);	//初始化mpu 直到初始化完�?
+  } while(ret);	//初始化mpu 直到初始化完�???
   HAL_UART_Receive_IT(&huart2, rxBuffer, 1);  // Start interrupt receive
 
   /* USER CODE END 2 */
@@ -128,11 +129,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 //	  MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);
 
-//	  SearchRun();
-	  TurnRight_angle(&htim4, 90);
-	  HAL_Delay(5000);
-	  TurnRight_angle(&htim4, 30);
-	  HAL_Delay(5000);
+	  SearchRun();
+
 
   }
   /* USER CODE END 3 */
