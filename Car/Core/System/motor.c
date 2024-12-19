@@ -406,6 +406,7 @@ void TurnLeft_angle(TIM_HandleTypeDef *htim, int angle)
 {
 	float roll_start, pitch_start, yaw_start;
 	float roll_current, pitch_current, yaw_current;
+	int finish = 0;
 	MPU6050_DMP_Get_Date(&pitch_start, &roll_start, &yaw_start);
 
 	float yaw_target = yaw_start + angle;
@@ -413,13 +414,13 @@ void TurnLeft_angle(TIM_HandleTypeDef *htim, int angle)
 
 	moveTurnLeft(&htim);
 
-	while(1)
+	while(!finish)
 	{
 		MPU6050_DMP_Get_Date(&pitch_current, &roll_current, &yaw_current);
 
 		float angleDiff = yaw_target - yaw_current;
 		if(angleDiff > -5 && angleDiff < 15){
-			break;
+			finish = 1;
 		}
 	}
 
@@ -431,6 +432,7 @@ void TurnRight_angle(TIM_HandleTypeDef *htim, int angle)
 {
 	float roll_start, pitch_start, yaw_start;
 	float roll_current, pitch_current, yaw_current;
+	int finish = 0;
 	MPU6050_DMP_Get_Date(&pitch_start, &roll_start, &yaw_start);
 
 	float yaw_target = yaw_start - angle;
@@ -438,13 +440,13 @@ void TurnRight_angle(TIM_HandleTypeDef *htim, int angle)
 
 	moveTurnRight(&htim);
 
-	while(1)
+	while(!finish)
 	{
 		MPU6050_DMP_Get_Date(&pitch_current, &roll_current, &yaw_current);
 
 		float angleDiff = yaw_target - yaw_current;
 		if(angleDiff > -15 && angleDiff < 5){
-			break;
+			finish = 1;
 		}
 	}
 
