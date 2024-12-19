@@ -27,25 +27,25 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   ALLOC
  11 .ARM.attributes 00000029  00000000  00000000  0002a0c0  2**0
                   CONTENTS, READONLY
- 12 .debug_info   0000d83b  00000000  00000000  0002a0e9  2**0
+ 12 .debug_info   0000d83d  00000000  00000000  0002a0e9  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 13 .debug_abbrev 000038cd  00000000  00000000  00037924  2**0
+ 13 .debug_abbrev 000038e9  00000000  00000000  00037926  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 14 .debug_aranges 00000ea8  00000000  00000000  0003b1f8  2**3
+ 14 .debug_aranges 00000ea8  00000000  00000000  0003b210  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 15 .debug_rnglists 00000b22  00000000  00000000  0003c0a0  2**0
+ 15 .debug_rnglists 00000b22  00000000  00000000  0003c0b8  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 16 .debug_macro  0001caea  00000000  00000000  0003cbc2  2**0
+ 16 .debug_macro  0001caf0  00000000  00000000  0003cbda  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 17 .debug_line   000153c8  00000000  00000000  000596ac  2**0
+ 17 .debug_line   00017387  00000000  00000000  000596ca  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    00096433  00000000  00000000  0006ea74  2**0
+ 18 .debug_str    00096457  00000000  00000000  00070a51  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  00104ea7  2**0
+ 19 .comment      00000043  00000000  00000000  00106ea8  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  0000459c  00000000  00000000  00104eec  2**2
+ 20 .debug_frame  0000459c  00000000  00000000  00106eec  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 00000055  00000000  00000000  00109488  2**0
+ 21 .debug_line_str 00000065  00000000  00000000  0010b488  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -1685,277 +1685,281 @@ void AT24CXX_Write(u16 WriteAddr,u8 *pBuffer,u16 NumToWrite)
  80012f4:	46bd      	mov	sp, r7
  80012f6:	bd80      	pop	{r7, pc}
 
-080012f8 <SetOperationMode>:
+080012f8 <CalculateChecksum>:
+
+extern UART_HandleTypeDef huart2;
+extern uint8_t change_mode;
 extern uint8_t nav_pkt;
+
+uint8_t CalculateChecksum(UART_Package_t* pkg) {
+ 80012f8:	b480      	push	{r7}
+ 80012fa:	b085      	sub	sp, #20
+ 80012fc:	af00      	add	r7, sp, #0
+ 80012fe:	6078      	str	r0, [r7, #4]
+    uint8_t sum = 0;
+ 8001300:	2300      	movs	r3, #0
+ 8001302:	73fb      	strb	r3, [r7, #15]
+    sum += pkg->cmd_type;
+ 8001304:	687b      	ldr	r3, [r7, #4]
+ 8001306:	785a      	ldrb	r2, [r3, #1]
+ 8001308:	7bfb      	ldrb	r3, [r7, #15]
+ 800130a:	4413      	add	r3, r2
+ 800130c:	73fb      	strb	r3, [r7, #15]
+    sum += pkg->data_len;
+ 800130e:	687b      	ldr	r3, [r7, #4]
+ 8001310:	789a      	ldrb	r2, [r3, #2]
+ 8001312:	7bfb      	ldrb	r3, [r7, #15]
+ 8001314:	4413      	add	r3, r2
+ 8001316:	73fb      	strb	r3, [r7, #15]
+    for(int i = 0; i < pkg->data_len; i++) {
+ 8001318:	2300      	movs	r3, #0
+ 800131a:	60bb      	str	r3, [r7, #8]
+ 800131c:	e00a      	b.n	8001334 <CalculateChecksum+0x3c>
+        sum += pkg->data[i];
+ 800131e:	687a      	ldr	r2, [r7, #4]
+ 8001320:	68bb      	ldr	r3, [r7, #8]
+ 8001322:	4413      	add	r3, r2
+ 8001324:	3303      	adds	r3, #3
+ 8001326:	781a      	ldrb	r2, [r3, #0]
+ 8001328:	7bfb      	ldrb	r3, [r7, #15]
+ 800132a:	4413      	add	r3, r2
+ 800132c:	73fb      	strb	r3, [r7, #15]
+    for(int i = 0; i < pkg->data_len; i++) {
+ 800132e:	68bb      	ldr	r3, [r7, #8]
+ 8001330:	3301      	adds	r3, #1
+ 8001332:	60bb      	str	r3, [r7, #8]
+ 8001334:	687b      	ldr	r3, [r7, #4]
+ 8001336:	789b      	ldrb	r3, [r3, #2]
+ 8001338:	461a      	mov	r2, r3
+ 800133a:	68bb      	ldr	r3, [r7, #8]
+ 800133c:	4293      	cmp	r3, r2
+ 800133e:	dbee      	blt.n	800131e <CalculateChecksum+0x26>
+    }
+    return sum;
+ 8001340:	7bfb      	ldrb	r3, [r7, #15]
+}
+ 8001342:	4618      	mov	r0, r3
+ 8001344:	3714      	adds	r7, #20
+ 8001346:	46bd      	mov	sp, r7
+ 8001348:	bc80      	pop	{r7}
+ 800134a:	4770      	bx	lr
+
+0800134c <SetOperationMode>:
 
 // Mode management
 uint8_t current_mode = MODE_MANUAL;
 
+
 void SetOperationMode(uint8_t mode) {
- 80012f8:	b480      	push	{r7}
- 80012fa:	b083      	sub	sp, #12
- 80012fc:	af00      	add	r7, sp, #0
- 80012fe:	4603      	mov	r3, r0
- 8001300:	71fb      	strb	r3, [r7, #7]
+ 800134c:	b480      	push	{r7}
+ 800134e:	b083      	sub	sp, #12
+ 8001350:	af00      	add	r7, sp, #0
+ 8001352:	4603      	mov	r3, r0
+ 8001354:	71fb      	strb	r3, [r7, #7]
     if (mode <= MODE_LINE_TRACK) {
- 8001302:	79fb      	ldrb	r3, [r7, #7]
- 8001304:	2b00      	cmp	r3, #0
- 8001306:	d102      	bne.n	800130e <SetOperationMode+0x16>
+ 8001356:	79fb      	ldrb	r3, [r7, #7]
+ 8001358:	2b00      	cmp	r3, #0
+ 800135a:	d102      	bne.n	8001362 <SetOperationMode+0x16>
         current_mode = mode;
- 8001308:	4a03      	ldr	r2, [pc, #12]	@ (8001318 <SetOperationMode+0x20>)
- 800130a:	79fb      	ldrb	r3, [r7, #7]
- 800130c:	7013      	strb	r3, [r2, #0]
+ 800135c:	4a03      	ldr	r2, [pc, #12]	@ (800136c <SetOperationMode+0x20>)
+ 800135e:	79fb      	ldrb	r3, [r7, #7]
+ 8001360:	7013      	strb	r3, [r2, #0]
     }
 }
- 800130e:	bf00      	nop
- 8001310:	370c      	adds	r7, #12
- 8001312:	46bd      	mov	sp, r7
- 8001314:	bc80      	pop	{r7}
- 8001316:	4770      	bx	lr
- 8001318:	20000000 	.word	0x20000000
+ 8001362:	bf00      	nop
+ 8001364:	370c      	adds	r7, #12
+ 8001366:	46bd      	mov	sp, r7
+ 8001368:	bc80      	pop	{r7}
+ 800136a:	4770      	bx	lr
+ 800136c:	20000000 	.word	0x20000000
 
-0800131c <UART_SendModeCmd>:
+08001370 <UART_SendModeCmd>:
 uint8_t GetCurrentMode(void) {
     return current_mode;
 }
 
 // Mode switching functions
 void UART_SendModeCmd(uint8_t mode) {
- 800131c:	b580      	push	{r7, lr}
- 800131e:	b08c      	sub	sp, #48	@ 0x30
- 8001320:	af00      	add	r7, sp, #0
- 8001322:	4603      	mov	r3, r0
- 8001324:	71fb      	strb	r3, [r7, #7]
+ 8001370:	b580      	push	{r7, lr}
+ 8001372:	b08c      	sub	sp, #48	@ 0x30
+ 8001374:	af00      	add	r7, sp, #0
+ 8001376:	4603      	mov	r3, r0
+ 8001378:	71fb      	strb	r3, [r7, #7]
     UART_Package_t pkg;
     
     pkg.header = FRAME_HEADER;
- 8001326:	23aa      	movs	r3, #170	@ 0xaa
- 8001328:	733b      	strb	r3, [r7, #12]
+ 800137a:	23aa      	movs	r3, #170	@ 0xaa
+ 800137c:	733b      	strb	r3, [r7, #12]
     pkg.cmd_type = CMD_MODE;
- 800132a:	2305      	movs	r3, #5
- 800132c:	737b      	strb	r3, [r7, #13]
+ 800137e:	2305      	movs	r3, #5
+ 8001380:	737b      	strb	r3, [r7, #13]
     pkg.data_len = 1;
- 800132e:	2301      	movs	r3, #1
- 8001330:	73bb      	strb	r3, [r7, #14]
+ 8001382:	2301      	movs	r3, #1
+ 8001384:	73bb      	strb	r3, [r7, #14]
     pkg.data[0] = mode;
- 8001332:	79fb      	ldrb	r3, [r7, #7]
- 8001334:	73fb      	strb	r3, [r7, #15]
+ 8001386:	79fb      	ldrb	r3, [r7, #7]
+ 8001388:	73fb      	strb	r3, [r7, #15]
     pkg.checksum = CalculateChecksum(&pkg);
- 8001336:	f107 030c 	add.w	r3, r7, #12
- 800133a:	4618      	mov	r0, r3
- 800133c:	f000 f87a 	bl	8001434 <CalculateChecksum>
- 8001340:	4603      	mov	r3, r0
- 8001342:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
+ 800138a:	f107 030c 	add.w	r3, r7, #12
+ 800138e:	4618      	mov	r0, r3
+ 8001390:	f7ff ffb2 	bl	80012f8 <CalculateChecksum>
+ 8001394:	4603      	mov	r3, r0
+ 8001396:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
     
     UART_SendPackage(&pkg);
- 8001346:	f107 030c 	add.w	r3, r7, #12
- 800134a:	4618      	mov	r0, r3
- 800134c:	f000 f958 	bl	8001600 <UART_SendPackage>
+ 800139a:	f107 030c 	add.w	r3, r7, #12
+ 800139e:	4618      	mov	r0, r3
+ 80013a0:	f000 f92e 	bl	8001600 <UART_SendPackage>
 }
- 8001350:	bf00      	nop
- 8001352:	3730      	adds	r7, #48	@ 0x30
- 8001354:	46bd      	mov	sp, r7
- 8001356:	bd80      	pop	{r7, pc}
+ 80013a4:	bf00      	nop
+ 80013a6:	3730      	adds	r7, #48	@ 0x30
+ 80013a8:	46bd      	mov	sp, r7
+ 80013aa:	bd80      	pop	{r7, pc}
 
-08001358 <SendModeChangeAck>:
+080013ac <SendModeChangeAck>:
 
 void SendModeChangeAck(uint8_t mode) {
- 8001358:	b580      	push	{r7, lr}
- 800135a:	b08c      	sub	sp, #48	@ 0x30
- 800135c:	af00      	add	r7, sp, #0
- 800135e:	4603      	mov	r3, r0
- 8001360:	71fb      	strb	r3, [r7, #7]
+ 80013ac:	b580      	push	{r7, lr}
+ 80013ae:	b08c      	sub	sp, #48	@ 0x30
+ 80013b0:	af00      	add	r7, sp, #0
+ 80013b2:	4603      	mov	r3, r0
+ 80013b4:	71fb      	strb	r3, [r7, #7]
     UART_Package_t pkg;
     
     pkg.header = FRAME_HEADER;
- 8001362:	23aa      	movs	r3, #170	@ 0xaa
- 8001364:	733b      	strb	r3, [r7, #12]
+ 80013b6:	23aa      	movs	r3, #170	@ 0xaa
+ 80013b8:	733b      	strb	r3, [r7, #12]
     pkg.cmd_type = CMD_STATUS;
- 8001366:	2304      	movs	r3, #4
- 8001368:	737b      	strb	r3, [r7, #13]
+ 80013ba:	2304      	movs	r3, #4
+ 80013bc:	737b      	strb	r3, [r7, #13]
     pkg.data_len = 2;
- 800136a:	2302      	movs	r3, #2
- 800136c:	73bb      	strb	r3, [r7, #14]
+ 80013be:	2302      	movs	r3, #2
+ 80013c0:	73bb      	strb	r3, [r7, #14]
     pkg.data[0] = 0x01; // Status type: mode change ack
- 800136e:	2301      	movs	r3, #1
- 8001370:	73fb      	strb	r3, [r7, #15]
+ 80013c2:	2301      	movs	r3, #1
+ 80013c4:	73fb      	strb	r3, [r7, #15]
     pkg.data[1] = mode; // New mode
- 8001372:	79fb      	ldrb	r3, [r7, #7]
- 8001374:	743b      	strb	r3, [r7, #16]
+ 80013c6:	79fb      	ldrb	r3, [r7, #7]
+ 80013c8:	743b      	strb	r3, [r7, #16]
     pkg.checksum = CalculateChecksum(&pkg);
- 8001376:	f107 030c 	add.w	r3, r7, #12
- 800137a:	4618      	mov	r0, r3
- 800137c:	f000 f85a 	bl	8001434 <CalculateChecksum>
- 8001380:	4603      	mov	r3, r0
- 8001382:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
+ 80013ca:	f107 030c 	add.w	r3, r7, #12
+ 80013ce:	4618      	mov	r0, r3
+ 80013d0:	f7ff ff92 	bl	80012f8 <CalculateChecksum>
+ 80013d4:	4603      	mov	r3, r0
+ 80013d6:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
     
     UART_SendPackage(&pkg);
- 8001386:	f107 030c 	add.w	r3, r7, #12
- 800138a:	4618      	mov	r0, r3
- 800138c:	f000 f938 	bl	8001600 <UART_SendPackage>
+ 80013da:	f107 030c 	add.w	r3, r7, #12
+ 80013de:	4618      	mov	r0, r3
+ 80013e0:	f000 f90e 	bl	8001600 <UART_SendPackage>
 }
- 8001390:	bf00      	nop
- 8001392:	3730      	adds	r7, #48	@ 0x30
- 8001394:	46bd      	mov	sp, r7
- 8001396:	bd80      	pop	{r7, pc}
+ 80013e4:	bf00      	nop
+ 80013e6:	3730      	adds	r7, #48	@ 0x30
+ 80013e8:	46bd      	mov	sp, r7
+ 80013ea:	bd80      	pop	{r7, pc}
 
-08001398 <UART_SendMotionCmd>:
+080013ec <UART_SendMotionCmd>:
 
 // Functions for Controller Board
 void UART_SendMotionCmd(uint8_t motion_type, uint8_t speed) {
- 8001398:	b580      	push	{r7, lr}
- 800139a:	b08c      	sub	sp, #48	@ 0x30
- 800139c:	af00      	add	r7, sp, #0
- 800139e:	4603      	mov	r3, r0
- 80013a0:	460a      	mov	r2, r1
- 80013a2:	71fb      	strb	r3, [r7, #7]
- 80013a4:	4613      	mov	r3, r2
- 80013a6:	71bb      	strb	r3, [r7, #6]
+ 80013ec:	b580      	push	{r7, lr}
+ 80013ee:	b08c      	sub	sp, #48	@ 0x30
+ 80013f0:	af00      	add	r7, sp, #0
+ 80013f2:	4603      	mov	r3, r0
+ 80013f4:	460a      	mov	r2, r1
+ 80013f6:	71fb      	strb	r3, [r7, #7]
+ 80013f8:	4613      	mov	r3, r2
+ 80013fa:	71bb      	strb	r3, [r7, #6]
     UART_Package_t pkg;
     
     pkg.header = FRAME_HEADER;
- 80013a8:	23aa      	movs	r3, #170	@ 0xaa
- 80013aa:	733b      	strb	r3, [r7, #12]
+ 80013fc:	23aa      	movs	r3, #170	@ 0xaa
+ 80013fe:	733b      	strb	r3, [r7, #12]
     pkg.cmd_type = CMD_MOTION;
- 80013ac:	2301      	movs	r3, #1
- 80013ae:	737b      	strb	r3, [r7, #13]
+ 8001400:	2301      	movs	r3, #1
+ 8001402:	737b      	strb	r3, [r7, #13]
     pkg.data_len = 2;
- 80013b0:	2302      	movs	r3, #2
- 80013b2:	73bb      	strb	r3, [r7, #14]
+ 8001404:	2302      	movs	r3, #2
+ 8001406:	73bb      	strb	r3, [r7, #14]
     pkg.data[0] = motion_type;
- 80013b4:	79fb      	ldrb	r3, [r7, #7]
- 80013b6:	73fb      	strb	r3, [r7, #15]
+ 8001408:	79fb      	ldrb	r3, [r7, #7]
+ 800140a:	73fb      	strb	r3, [r7, #15]
     pkg.data[1] = speed;    // TODO: Set Speed
- 80013b8:	79bb      	ldrb	r3, [r7, #6]
- 80013ba:	743b      	strb	r3, [r7, #16]
+ 800140c:	79bb      	ldrb	r3, [r7, #6]
+ 800140e:	743b      	strb	r3, [r7, #16]
     pkg.checksum = CalculateChecksum(&pkg);
- 80013bc:	f107 030c 	add.w	r3, r7, #12
- 80013c0:	4618      	mov	r0, r3
- 80013c2:	f000 f837 	bl	8001434 <CalculateChecksum>
- 80013c6:	4603      	mov	r3, r0
- 80013c8:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
+ 8001410:	f107 030c 	add.w	r3, r7, #12
+ 8001414:	4618      	mov	r0, r3
+ 8001416:	f7ff ff6f 	bl	80012f8 <CalculateChecksum>
+ 800141a:	4603      	mov	r3, r0
+ 800141c:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
     
     UART_SendPackage(&pkg);
- 80013cc:	f107 030c 	add.w	r3, r7, #12
- 80013d0:	4618      	mov	r0, r3
- 80013d2:	f000 f915 	bl	8001600 <UART_SendPackage>
+ 8001420:	f107 030c 	add.w	r3, r7, #12
+ 8001424:	4618      	mov	r0, r3
+ 8001426:	f000 f8eb 	bl	8001600 <UART_SendPackage>
 }
- 80013d6:	bf00      	nop
- 80013d8:	3730      	adds	r7, #48	@ 0x30
- 80013da:	46bd      	mov	sp, r7
- 80013dc:	bd80      	pop	{r7, pc}
+ 800142a:	bf00      	nop
+ 800142c:	3730      	adds	r7, #48	@ 0x30
+ 800142e:	46bd      	mov	sp, r7
+ 8001430:	bd80      	pop	{r7, pc}
 
-080013de <UART_SendNavCmd>:
+08001432 <UART_SendNavCmd>:
 
 void UART_SendNavCmd(uint8_t nav_mode, uint8_t* path_data, uint8_t path_len) {
- 80013de:	b580      	push	{r7, lr}
- 80013e0:	b08c      	sub	sp, #48	@ 0x30
- 80013e2:	af00      	add	r7, sp, #0
- 80013e4:	4603      	mov	r3, r0
- 80013e6:	6039      	str	r1, [r7, #0]
- 80013e8:	71fb      	strb	r3, [r7, #7]
- 80013ea:	4613      	mov	r3, r2
- 80013ec:	71bb      	strb	r3, [r7, #6]
+ 8001432:	b580      	push	{r7, lr}
+ 8001434:	b08c      	sub	sp, #48	@ 0x30
+ 8001436:	af00      	add	r7, sp, #0
+ 8001438:	4603      	mov	r3, r0
+ 800143a:	6039      	str	r1, [r7, #0]
+ 800143c:	71fb      	strb	r3, [r7, #7]
+ 800143e:	4613      	mov	r3, r2
+ 8001440:	71bb      	strb	r3, [r7, #6]
     UART_Package_t pkg;
     
     pkg.header = FRAME_HEADER;
- 80013ee:	23aa      	movs	r3, #170	@ 0xaa
- 80013f0:	733b      	strb	r3, [r7, #12]
+ 8001442:	23aa      	movs	r3, #170	@ 0xaa
+ 8001444:	733b      	strb	r3, [r7, #12]
     pkg.cmd_type = CMD_NAV;
- 80013f2:	2303      	movs	r3, #3
- 80013f4:	737b      	strb	r3, [r7, #13]
+ 8001446:	2303      	movs	r3, #3
+ 8001448:	737b      	strb	r3, [r7, #13]
     pkg.data_len = path_len + 1;
- 80013f6:	79bb      	ldrb	r3, [r7, #6]
- 80013f8:	3301      	adds	r3, #1
- 80013fa:	b2db      	uxtb	r3, r3
- 80013fc:	73bb      	strb	r3, [r7, #14]
+ 800144a:	79bb      	ldrb	r3, [r7, #6]
+ 800144c:	3301      	adds	r3, #1
+ 800144e:	b2db      	uxtb	r3, r3
+ 8001450:	73bb      	strb	r3, [r7, #14]
     pkg.data[0] = nav_mode;
- 80013fe:	79fb      	ldrb	r3, [r7, #7]
- 8001400:	73fb      	strb	r3, [r7, #15]
+ 8001452:	79fb      	ldrb	r3, [r7, #7]
+ 8001454:	73fb      	strb	r3, [r7, #15]
     memcpy(&pkg.data[1], path_data, path_len);
- 8001402:	79ba      	ldrb	r2, [r7, #6]
- 8001404:	f107 030c 	add.w	r3, r7, #12
- 8001408:	3304      	adds	r3, #4
- 800140a:	6839      	ldr	r1, [r7, #0]
- 800140c:	4618      	mov	r0, r3
- 800140e:	f00a fc36 	bl	800bc7e <memcpy>
+ 8001456:	79ba      	ldrb	r2, [r7, #6]
+ 8001458:	f107 030c 	add.w	r3, r7, #12
+ 800145c:	3304      	adds	r3, #4
+ 800145e:	6839      	ldr	r1, [r7, #0]
+ 8001460:	4618      	mov	r0, r3
+ 8001462:	f00a fc0c 	bl	800bc7e <memcpy>
     pkg.checksum = CalculateChecksum(&pkg);
- 8001412:	f107 030c 	add.w	r3, r7, #12
- 8001416:	4618      	mov	r0, r3
- 8001418:	f000 f80c 	bl	8001434 <CalculateChecksum>
- 800141c:	4603      	mov	r3, r0
- 800141e:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
+ 8001466:	f107 030c 	add.w	r3, r7, #12
+ 800146a:	4618      	mov	r0, r3
+ 800146c:	f7ff ff44 	bl	80012f8 <CalculateChecksum>
+ 8001470:	4603      	mov	r3, r0
+ 8001472:	f887 302f 	strb.w	r3, [r7, #47]	@ 0x2f
     
     UART_SendPackage(&pkg);
- 8001422:	f107 030c 	add.w	r3, r7, #12
- 8001426:	4618      	mov	r0, r3
- 8001428:	f000 f8ea 	bl	8001600 <UART_SendPackage>
+ 8001476:	f107 030c 	add.w	r3, r7, #12
+ 800147a:	4618      	mov	r0, r3
+ 800147c:	f000 f8c0 	bl	8001600 <UART_SendPackage>
 }
- 800142c:	bf00      	nop
- 800142e:	3730      	adds	r7, #48	@ 0x30
- 8001430:	46bd      	mov	sp, r7
- 8001432:	bd80      	pop	{r7, pc}
-
-08001434 <CalculateChecksum>:
-    
-    UART_SendPackage(&pkg);
-}
-
-// Utility Functions
-uint8_t CalculateChecksum(UART_Package_t* pkg) {
- 8001434:	b480      	push	{r7}
- 8001436:	b085      	sub	sp, #20
- 8001438:	af00      	add	r7, sp, #0
- 800143a:	6078      	str	r0, [r7, #4]
-    uint8_t sum = 0;
- 800143c:	2300      	movs	r3, #0
- 800143e:	73fb      	strb	r3, [r7, #15]
-    sum += pkg->cmd_type;
- 8001440:	687b      	ldr	r3, [r7, #4]
- 8001442:	785a      	ldrb	r2, [r3, #1]
- 8001444:	7bfb      	ldrb	r3, [r7, #15]
- 8001446:	4413      	add	r3, r2
- 8001448:	73fb      	strb	r3, [r7, #15]
-    sum += pkg->data_len;
- 800144a:	687b      	ldr	r3, [r7, #4]
- 800144c:	789a      	ldrb	r2, [r3, #2]
- 800144e:	7bfb      	ldrb	r3, [r7, #15]
- 8001450:	4413      	add	r3, r2
- 8001452:	73fb      	strb	r3, [r7, #15]
-    for(int i = 0; i < pkg->data_len; i++) {
- 8001454:	2300      	movs	r3, #0
- 8001456:	60bb      	str	r3, [r7, #8]
- 8001458:	e00a      	b.n	8001470 <CalculateChecksum+0x3c>
-        sum += pkg->data[i];
- 800145a:	687a      	ldr	r2, [r7, #4]
- 800145c:	68bb      	ldr	r3, [r7, #8]
- 800145e:	4413      	add	r3, r2
- 8001460:	3303      	adds	r3, #3
- 8001462:	781a      	ldrb	r2, [r3, #0]
- 8001464:	7bfb      	ldrb	r3, [r7, #15]
- 8001466:	4413      	add	r3, r2
- 8001468:	73fb      	strb	r3, [r7, #15]
-    for(int i = 0; i < pkg->data_len; i++) {
- 800146a:	68bb      	ldr	r3, [r7, #8]
- 800146c:	3301      	adds	r3, #1
- 800146e:	60bb      	str	r3, [r7, #8]
- 8001470:	687b      	ldr	r3, [r7, #4]
- 8001472:	789b      	ldrb	r3, [r3, #2]
- 8001474:	461a      	mov	r2, r3
- 8001476:	68bb      	ldr	r3, [r7, #8]
- 8001478:	4293      	cmp	r3, r2
- 800147a:	dbee      	blt.n	800145a <CalculateChecksum+0x26>
-    }
-    return sum;
- 800147c:	7bfb      	ldrb	r3, [r7, #15]
-}
- 800147e:	4618      	mov	r0, r3
- 8001480:	3714      	adds	r7, #20
- 8001482:	46bd      	mov	sp, r7
- 8001484:	bc80      	pop	{r7}
- 8001486:	4770      	bx	lr
+ 8001480:	bf00      	nop
+ 8001482:	3730      	adds	r7, #48	@ 0x30
+ 8001484:	46bd      	mov	sp, r7
+ 8001486:	bd80      	pop	{r7, pc}
 
 08001488 <VerifyChecksum>:
+    pkg.checksum = CalculateChecksum(&pkg);
+    
+    UART_SendPackage(&pkg);
+}
 
 int VerifyChecksum(UART_Package_t* pkg) {
  8001488:	b580      	push	{r7, lr}
@@ -1964,7 +1968,7 @@ int VerifyChecksum(UART_Package_t* pkg) {
  800148e:	6078      	str	r0, [r7, #4]
     uint8_t sum = CalculateChecksum(pkg);
  8001490:	6878      	ldr	r0, [r7, #4]
- 8001492:	f7ff ffcf 	bl	8001434 <CalculateChecksum>
+ 8001492:	f7ff ff31 	bl	80012f8 <CalculateChecksum>
  8001496:	4603      	mov	r3, r0
  8001498:	73fb      	strb	r3, [r7, #15]
     return (sum == pkg->checksum) ? 0 : -1;
@@ -2021,13 +2025,13 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
  80014f0:	687b      	ldr	r3, [r7, #4]
  80014f2:	78db      	ldrb	r3, [r3, #3]
  80014f4:	4618      	mov	r0, r3
- 80014f6:	f7ff feff 	bl	80012f8 <SetOperationMode>
+ 80014f6:	f7ff ff29 	bl	800134c <SetOperationMode>
             // Send mode change acknowledgment
             SendModeChangeAck(pkg->data[0]);
  80014fa:	687b      	ldr	r3, [r7, #4]
  80014fc:	78db      	ldrb	r3, [r3, #3]
  80014fe:	4618      	mov	r0, r3
- 8001500:	f7ff ff2a 	bl	8001358 <SendModeChangeAck>
+ 8001500:	f7ff ff54 	bl	80013ac <SendModeChangeAck>
             break;
  8001504:	e041      	b.n	800158a <ProcessReceivedPackage+0xd2>
         case CMD_DISTANCE:
@@ -13824,7 +13828,7 @@ void full_control()
 				UART_SendMotionCmd(MOTION_TURN_L, 100);
  8006e12:	2164      	movs	r1, #100	@ 0x64
  8006e14:	2005      	movs	r0, #5
- 8006e16:	f7fa fabf 	bl	8001398 <UART_SendMotionCmd>
+ 8006e16:	f7fa fae9 	bl	80013ec <UART_SendMotionCmd>
  8006e1a:	e040      	b.n	8006e9e <full_control+0x1b2>
 			} else if (touchRow == 0 && touchCol == 1){
  8006e1c:	68fb      	ldr	r3, [r7, #12]
@@ -13836,7 +13840,7 @@ void full_control()
 				UART_SendMotionCmd(MOTION_FORWARD, 100);
  8006e28:	2164      	movs	r1, #100	@ 0x64
  8006e2a:	2001      	movs	r0, #1
- 8006e2c:	f7fa fab4 	bl	8001398 <UART_SendMotionCmd>
+ 8006e2c:	f7fa fade 	bl	80013ec <UART_SendMotionCmd>
  8006e30:	e035      	b.n	8006e9e <full_control+0x1b2>
 			} else if (touchRow == 0 && touchCol == 2){
  8006e32:	68fb      	ldr	r3, [r7, #12]
@@ -13848,7 +13852,7 @@ void full_control()
 				UART_SendMotionCmd(MOTION_TURN_R, 100);
  8006e3e:	2164      	movs	r1, #100	@ 0x64
  8006e40:	2006      	movs	r0, #6
- 8006e42:	f7fa faa9 	bl	8001398 <UART_SendMotionCmd>
+ 8006e42:	f7fa fad3 	bl	80013ec <UART_SendMotionCmd>
  8006e46:	e02a      	b.n	8006e9e <full_control+0x1b2>
 			} else if (touchRow == 1 && touchCol == 0){
  8006e48:	68fb      	ldr	r3, [r7, #12]
@@ -13860,7 +13864,7 @@ void full_control()
 				UART_SendMotionCmd(MOTION_LEFT, 100);
  8006e54:	2164      	movs	r1, #100	@ 0x64
  8006e56:	2003      	movs	r0, #3
- 8006e58:	f7fa fa9e 	bl	8001398 <UART_SendMotionCmd>
+ 8006e58:	f7fa fac8 	bl	80013ec <UART_SendMotionCmd>
  8006e5c:	e01f      	b.n	8006e9e <full_control+0x1b2>
 			} else if (touchRow == 1 && touchCol == 1){
  8006e5e:	68fb      	ldr	r3, [r7, #12]
@@ -13880,7 +13884,7 @@ void full_control()
 				UART_SendMotionCmd(MOTION_RIGHT, 100);
  8006e76:	2164      	movs	r1, #100	@ 0x64
  8006e78:	2004      	movs	r0, #4
- 8006e7a:	f7fa fa8d 	bl	8001398 <UART_SendMotionCmd>
+ 8006e7a:	f7fa fab7 	bl	80013ec <UART_SendMotionCmd>
  8006e7e:	e00e      	b.n	8006e9e <full_control+0x1b2>
 			} else if (touchRow == 2 && touchCol == 1){
  8006e80:	68fb      	ldr	r3, [r7, #12]
@@ -13892,7 +13896,7 @@ void full_control()
 				UART_SendMotionCmd(MOTION_BACKWARD, 100);
  8006e8c:	2164      	movs	r1, #100	@ 0x64
  8006e8e:	2002      	movs	r0, #2
- 8006e90:	f7fa fa82 	bl	8001398 <UART_SendMotionCmd>
+ 8006e90:	f7fa faac 	bl	80013ec <UART_SendMotionCmd>
 			}
 		}
 	} else {
@@ -14218,7 +14222,7 @@ void path_processing()
  8007128:	461a      	mov	r2, r3
  800712a:	493c      	ldr	r1, [pc, #240]	@ (800721c <path_processing+0x2bc>)
  800712c:	2002      	movs	r0, #2
- 800712e:	f7fa f956 	bl	80013de <UART_SendNavCmd>
+ 800712e:	f7fa f980 	bl	8001432 <UART_SendNavCmd>
 				delay_ms(500);
  8007132:	f44f 70fa 	mov.w	r0, #500	@ 0x1f4
  8007136:	f7fa fc79 	bl	8001a2c <delay_ms>
@@ -14229,7 +14233,7 @@ void path_processing()
  8007140:	461a      	mov	r2, r3
  8007142:	4936      	ldr	r1, [pc, #216]	@ (800721c <path_processing+0x2bc>)
  8007144:	2002      	movs	r0, #2
- 8007146:	f7fa f94a 	bl	80013de <UART_SendNavCmd>
+ 8007146:	f7fa f974 	bl	8001432 <UART_SendNavCmd>
  800714a:	f44f 70fa 	mov.w	r0, #500	@ 0x1f4
  800714e:	f7fa fc6d 	bl	8001a2c <delay_ms>
  8007152:	4b30      	ldr	r3, [pc, #192]	@ (8007214 <path_processing+0x2b4>)
@@ -15610,7 +15614,7 @@ int main(void)
  8007b5e:	681b      	ldr	r3, [r3, #0]
  8007b60:	b2db      	uxtb	r3, r3
  8007b62:	4618      	mov	r0, r3
- 8007b64:	f7f9 fbda 	bl	800131c <UART_SendModeCmd>
+ 8007b64:	f7f9 fc04 	bl	8001370 <UART_SendModeCmd>
   			delay_ms(500);
  8007b68:	f44f 70fa 	mov.w	r0, #500	@ 0x1f4
  8007b6c:	f7f9 ff5e 	bl	8001a2c <delay_ms>
@@ -15620,7 +15624,7 @@ int main(void)
  8007b74:	681b      	ldr	r3, [r3, #0]
  8007b76:	b2db      	uxtb	r3, r3
  8007b78:	4618      	mov	r0, r3
- 8007b7a:	f7f9 fbcf 	bl	800131c <UART_SendModeCmd>
+ 8007b7a:	f7f9 fbf9 	bl	8001370 <UART_SendModeCmd>
  8007b7e:	f44f 70fa 	mov.w	r0, #500	@ 0x1f4
  8007b82:	f7f9 ff53 	bl	8001a2c <delay_ms>
  8007b86:	4b30      	ldr	r3, [pc, #192]	@ (8007c48 <main+0x154>)
@@ -15660,7 +15664,7 @@ int main(void)
  8007bc4:	681b      	ldr	r3, [r3, #0]
  8007bc6:	b2db      	uxtb	r3, r3
  8007bc8:	4618      	mov	r0, r3
- 8007bca:	f7f9 fb95 	bl	80012f8 <SetOperationMode>
+ 8007bca:	f7f9 fbbf 	bl	800134c <SetOperationMode>
 
   		if(key==WKUP_PRES)	//KEY0按下,切换模式
  8007bce:	78fb      	ldrb	r3, [r7, #3]

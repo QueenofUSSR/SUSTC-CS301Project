@@ -13,6 +13,7 @@
 #define CMD_NAV        0x03  // Navigation control
 #define CMD_STATUS     0x04  // Status information
 #define CMD_MODE       0x05  // Mode switch command
+#define CMD_ENV_DETECT 0x06  // Environment detection command
 
 // Operation Modes
 #define MODE_MANUAL    0x01  // Manual control mode
@@ -55,5 +56,6 @@ void SendModeChangeAck(uint8_t mode);
 void SendNavAck(void);
 int VerifyChecksum(UART_Package_t* pkg);
 void SendDistanceData(float distance);
+void SendEnvDetectData(uint8_t location, uint8_t env_type);
 
 #endif /* __BLUETOOTH_H */ 

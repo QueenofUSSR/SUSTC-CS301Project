@@ -116,6 +116,7 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
     }
 }
 
+
 void SendDistanceData(float distance) {
     UART_Package_t pkg;
     
@@ -297,6 +298,16 @@ void ProcessNavCmd(uint8_t nav_mode, uint8_t* path_data, uint8_t path_len){
 	    }
 }
 
+void SendEnvDetectData(uint8_t location, uint8_t env_type){
+	UART_Package_t pkg;
+	pkg.header = FRAME_HEADER;
+	pkg.cmd_type = CMD_ENV_DETECT;
+	pkg.data_len = 2;
+	pkg.data[0] = location;
+	pkg.data[1] = env_type;
+	pkg.checksum = CalculateChecksum(&pkg);
+	UART_SendPackage(&pkg);
+}
 
 void StopMotion(void) {
     HAL_GPIO_WritePin(L1_GPIO_Port, L1_Pin, GPIO_PIN_RESET);
