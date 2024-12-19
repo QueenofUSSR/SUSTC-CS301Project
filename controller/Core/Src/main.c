@@ -66,6 +66,7 @@ uint8_t map[4][4] = {
 int mode;
 extern uint8_t current_mode;
 uint8_t change_mode;
+uint8_t flag;
 extern const unsigned char gImage_obs[6728];
 extern const unsigned char gImage_HLINE[6728];
 extern const unsigned char gImage_VLINE[6728];
@@ -632,6 +633,37 @@ void detect_obs()
 	map[3][3] = OBSTACLE;
 	draw_map(map);
 }
+
+void track_line()
+{
+	tp_dev.scan(0);
+	POINT_COLOR=BLACK;
+	unsigned char str[6];
+	sprintf(str, "mode%d", mode);
+	LCD_ShowString(180, 0, 200, 16, 16, str);
+
+	LCD_DrawRectangle(50, 100, 190, 140);
+	LCD_ShowString(60, 110, 120, 30, 18, (unsigned char*)"Track line");
+	LCD_DrawRectangle(50, 180, 190, 220);
+	LCD_ShowString(60, 190, 120, 30, 18, (unsigned char*)"Full control");
+
+	if(tp_dev.sta&TP_PRES_DOWN
+			&& tp_dev.x[0] > 50 && tp_dev.x[0] < 190)
+	{
+		if(tp_dev.y[0] > 100 && tp_dev.y[0] < 140)		//track_line
+		{
+			mode = 0;
+			flag = 1;
+			LCD_Clear(WHITE);
+
+		}else if(tp_dev.y[0] > 180 && tp_dev.y[0] < 220)//Full_control
+		{
+			mode = 1;
+			flag = 1;
+			LCD_Clear(WHITE);
+		}
+	}
+}
 ////////////////////////////////////////////////////////////////////////////////
 //5个触控点的颜�?(电容触摸屏用)
 const u16 POINT_COLOR_TBL[5]={RED,GREEN,BLUE,BROWN,GRED};
@@ -697,7 +729,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   HAL_UART_Receive_IT(&huart2, rxBuffer, 1);
   mode = FULL_CONTROL;
-  uint8_t flag = 0;
+  flag = 0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -719,7 +751,7 @@ int main(void)
   		case FULL_CONTROL:full_control(); break;
   		case PATH_PROCESSING:path_processing(); break;
   		case DETECT_OBS:detect_obs(); break;
-  		case TRACK_LINE:break;
+  		case TRACK_LINE:track_line(); break;
   		}
 		SetOperationMode(mode);
 

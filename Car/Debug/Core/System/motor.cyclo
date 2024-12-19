@@ -13,5 +13,5 @@
 ../Core/System/motor.c:371:6:moveRightslow	1
 ../Core/System/motor.c:382:6:moveTurnLeftslow	1
 ../Core/System/motor.c:393:6:moveTurnRightslow	1
-../Core/System/motor.c:405:6:TurnLeft_angle	4
-../Core/System/motor.c:430:6:TurnRight_angle	4
+../Core/System/motor.c:405:6:TurnLeft_angle	5
+../Core/System/motor.c:431:6:TurnRight_angle	5

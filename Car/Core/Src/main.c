@@ -129,7 +129,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 //	  MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);
 
-	  SearchRun();
+//	  SearchRun();
 
 
   }
