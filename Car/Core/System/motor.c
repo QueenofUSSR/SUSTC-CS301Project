@@ -2,6 +2,8 @@
 #include "MPU6050.h"
 
 extern TIM_HandleTypeDef htim4;
+extern int yaw;
+extern  float current_pitch, current_roll, current_yaw;
 
 //start PWM timer
 void motorInit()
@@ -404,52 +406,51 @@ void moveTurnRightslow(TIM_HandleTypeDef *htim)
 
 void TurnLeft_angle(TIM_HandleTypeDef *htim, int angle)
 {
-	float roll_start, pitch_start, yaw_start;
-	float roll_current, pitch_current, yaw_current;
 	int finish = 0;
-	MPU6050_DMP_Get_Date(&pitch_start, &roll_start, &yaw_start);
 
-	float yaw_target = yaw_start + angle;
+	float yaw_target = yaw + angle;
 	if (yaw_target >= 180.0f) yaw_target -= 360.0f;
 
 	moveTurnLeft(&htim);
 
 	while(!finish)
 	{
-		MPU6050_DMP_Get_Date(&pitch_current, &roll_current, &yaw_current);
+		MPU6050_DMP_Get_Date(&current_pitch, &current_roll, &current_yaw);
 
-		float angleDiff = yaw_target - yaw_current;
-		if(angleDiff > -5 && angleDiff < 15){
+		float angleDiff = yaw_target - current_yaw;
+		if(angleDiff > -5 && angleDiff < 15)
+		{
 			finish = 1;
+			break;
 		}
 	}
-
+	yaw += angle;
+	if (yaw >= 180.0f) yaw -= 360.0f;
 	motorBreak();
 
 }
 
 void TurnRight_angle(TIM_HandleTypeDef *htim, int angle)
 {
-	float roll_start, pitch_start, yaw_start;
-	float roll_current, pitch_current, yaw_current;
 	int finish = 0;
-	MPU6050_DMP_Get_Date(&pitch_start, &roll_start, &yaw_start);
 
-	float yaw_target = yaw_start - angle;
+	float yaw_target = yaw - angle;
 	if (yaw_target < -180.0f) yaw_target += 360.0f;
 
 	moveTurnRight(&htim);
 
 	while(!finish)
 	{
-		MPU6050_DMP_Get_Date(&pitch_current, &roll_current, &yaw_current);
+		MPU6050_DMP_Get_Date(&current_pitch, &current_roll, &current_yaw);
 
-		float angleDiff = yaw_target - yaw_current;
-		if(angleDiff > -15 && angleDiff < 5){
+		float angleDiff = yaw_target - current_yaw;
+		if(angleDiff > -15 && angleDiff < 5)
+		{
 			finish = 1;
 		}
 	}
-
+	yaw -= angle;
+	if(yaw < -180.0f) yaw += 360.0f;
 	motorBreak();
 
 }

@@ -55,6 +55,8 @@ extern TIM_HandleTypeDef htim4;
 extern TIM_HandleTypeDef htim5;
 uint8_t rxBuffer[38];  // Add receive buffer
 char direction;
+int yaw;
+float current_pitch, current_roll, current_yaw;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -127,9 +129,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-//	  MPU6050_DMP_Get_Date(&pitch, &roll, &yaw);
 
 //	  SearchRun();
+	  TurnRight_angle(&htim4, 90);
+	  HAL_Delay(3000);
+	  TurnLeft_angle(&htim4, 60);
+	  HAL_Delay(3000);
 
 
   }

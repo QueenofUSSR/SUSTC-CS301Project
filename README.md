@@ -13,13 +13,7 @@
 
 `TurnLeft_angle(TIM_HandleTypeDef *htim, **int** angle)`: 左转`angle`度
 
-`TurnRight_angle(TIM_HandleTypeDef *htim, **int** angle)`: 右转`angle`度
-
----
-
-左右转目标度数函数目前是基于小车初始位置的角度偏置（可我写的逻辑是基于目前位置的角度偏置，debug中）
-
----
+`TurnRight_angle(TIM_HandleTypeDef *htim, **int** angle)`: 右转`angle`度（这两个函数有问题的话可以检查mpu6050的接线的接触是否良好，mpu6050是小车板子左边加的那个模块）
 
 
 
