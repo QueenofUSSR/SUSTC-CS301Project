@@ -67,7 +67,238 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+#include <stdio.h>
+#include <stdbool.h>
+#define SIZE 4
 
+int detectgrid[SIZE][SIZE] = {0}; //最终返回检测到的障碍物. 0: 未检测 1：障碍物 2：空格 3:不可达
+int grid[SIZE][SIZE] = {0};  // 0:未检测 1:已探测到的障碍物 2：标记一条可能的路径（下次迭代时删除）
+int realgrid[SIZE][SIZE] = {
+    {0,0,1,0},
+    {1,1,1,0},
+    {0,0,1,0},
+    {0,0,0,0}
+}; // 模拟真实的障碍物位置
+char directionGrid[SIZE][SIZE] = {'O'}; // 计算后的一次路径
+char currentDir = '^';
+bool visited[SIZE][SIZE] = {false}; //一次dfs
+int startX, startY, endX, endY;
+int currentX, currentY;
+int obstacle_detect_start, obstacle_detect_end;
+
+int directions[4][2] = {
+    {1, 0},  // 下
+    {-1, 0}, // 上
+    {0, 1},  // 右
+    {0, -1}   // 左
+};
+
+
+char directionChars[4] = {'v', '^', '>', '<'};
+
+
+bool canMove(int x, int y) {
+
+    return (x >= 0 && x < SIZE && y >= 0 && y < SIZE && grid[x][y] == 0 && !visited[x][y]);
+}
+bool dfs(int x, int y) {  // 根据一对起点和终点计算一条路径
+    if (x == endX && y == endY) {
+        return true;
+    }
+
+    visited[x][y] = true;
+
+    for (int i = 0; i < 4; i++) {
+        int newX = x + directions[i][0];
+        int newY = y + directions[i][1];
+
+        if (canMove(newX, newY)) {
+            grid[newX][newY] = 2;
+
+            directionGrid[x][y] = directionChars[i];
+
+            if (dfs(newX, newY)) {
+                return true;
+            }
+
+            grid[newX][newY] = 0;
+            directionGrid[newX][newY] = 'O';
+        }
+    }
+
+    visited[x][y] = false;
+    return false;
+}
+
+void initializeGrid() {
+    for(int i=0;i<SIZE;i++){
+        for(int j=0;j<SIZE;j++){
+            directionGrid[i][j] = 'O';
+            visited[i][j] = false;
+            if(detectgrid[i][j]==1) {
+                grid[i][j] = 1;
+            } else grid[i][j] = 0;
+        }
+    }
+}
+
+void printGrid() {
+    printf("网格状态:\n");
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (grid[i][j] == 1) {
+                printf("X "); // 障碍物
+            } else if (grid[i][j] == 2) {
+                printf("%c ", directionGrid[i][j]);
+            } else {
+                printf("O "); // 空格
+            }
+
+        }
+        printf("\n");
+    }
+}
+
+bool detectionComplete(){
+    for(int i=0;i<SIZE;i++){
+        for(int j=0;j<SIZE;j++){
+            if(detectgrid[i][j]==0) return false;
+        }
+    }
+    return true;
+}
+
+void adaptHead(char dir){
+    if (dir=='^'){
+        switch(currentDir){
+            case '<': //turnRight90
+            break;
+            case '>': //turnLeft90
+            break;
+            case 'v': //turnRight180
+            break;
+        }
+    } else if (dir=='v')
+    {
+        switch(currentDir){
+            case '<': //turnLeft90
+            break;
+            case '>': //turnRight90
+            break;
+            case '^': //turnRight180
+            break;
+        }
+    } else if (dir=='<')
+    {
+        switch(currentDir){
+            case 'v': //turnRight90
+            break;
+            case '>': //turnRight180
+            break;
+            case '^': //turnLeft90
+            break;
+        }
+    } else if (dir=='>')
+    {
+        switch(currentDir){
+            case '<': //turnRight180
+            break;
+            case 'v': //turnLeft90
+            break;
+            case '^': //turnRight90
+            break;
+        }
+    }
+    currentDir = dir;
+}
+
+int detect(int nextX, int nextY){
+    //原本是超声波测距，先用数组代替测距结果
+    if (realgrid[nextX][nextY]==1){
+        return 50;
+    } else return 100;
+}
+
+void mark_path(){
+    while(SIZE*currentX+currentY!=SIZE*endX+endY){
+        adaptHead(directionGrid[currentX][currentY]);
+        int nextX, nextY;
+        switch(currentDir){
+            case '<':
+                nextX = currentX;
+                nextY = currentY-1;
+            break;
+            case '>':
+                nextX = currentX;
+                nextY = currentY+1;
+            break;
+            case '^':
+                nextX = currentX-1;
+                nextY = currentY;
+            break;
+            case 'v':
+                nextX = currentX+1;
+                nextY = currentY;
+            break;
+        }
+        int dis = detect(nextX, nextY);
+        if (dis<80){
+            detectgrid[nextX][nextY] = 1;
+            // TODO: transmit(SIZE*nextX+nextY, 1);  //传输一格探测结果到上位机
+            break;
+        }
+        detectgrid[nextX][nextY] = 2;
+        // TODO: transmit(SIZE*nextX+nextY, 2);  //传输一格探测结果到上位机
+        //TODO: moveForward() 向前移动80cm
+        currentX = nextX;
+        currentY = nextY;
+    }
+    return;
+}
+
+void obstacle_detect() {
+	//TODO: 在这里收到起点和终点坐标
+    currentX = obstacle_detect_start / 4;
+    currentY = obstacle_detect_start % 4;
+    endX = obstacle_detect_end / 4;
+    endY = obstacle_detect_end % 4;
+    printf("start: %d, %d\n", currentX, currentY);
+    printf("end: %d, %d\n", endX, endY);
+    detectgrid[currentX][currentY] = 2;
+    detectgrid[endX][endY] = 2;
+
+    while(!detectionComplete()){
+
+        initializeGrid();
+        bool found = false;
+        for(int i=0;i<SIZE;i++){
+            if(found) break;
+            for(int j=0;j<SIZE;j++){
+                if(detectgrid[i][j]==0) {
+                    endX = i;
+                    endY = j;
+                    found = true;
+                    break;
+                }
+            }
+        }
+        startX = currentX;
+        startY = currentY;
+        if (dfs(startX, startY)) {
+            mark_path();
+        } else {
+            detectgrid[endX][endY] = 3;
+        }
+    }
+    //找到所有障碍物，移动到终点
+    startX = currentX;
+    startY = currentY;
+    endX = obstacle_detect_end / 4;
+    endY = obstacle_detect_end % 4;
+    initializeGrid();
+    dfs(startX, startY);
+    mark_path();
+}
 /* USER CODE END 0 */
 
 /**

@@ -35,37 +35,37 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := Car
+BUILD_ARTIFACT_NAME := car
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-Car.elf \
+car.elf \
 
 MAP_FILES += \
-Car.map \
+car.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-Car.list \
+car.list \
 
 OBJCOPY_HEX += \
-Car.hex \
+car.hex \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: Car.elf secondary-outputs
+main-build: car.elf secondary-outputs
 
 # Tool invocations
-Car.elf Car.map: $(OBJS) $(USER_OBJS) D:\CodeFile\Java&dsaa\dsaa\Project\SUSTC-CS301Project\Car\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Car.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"D:\CodeFile\Java&dsaa\dsaa\Project\SUSTC-CS301Project\Car\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Car.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+car.elf car.map: $(OBJS) $(USER_OBJS) C:\Users\30951\Downloads\LAB9\SUSTC-CS301Project\car\STM32F103RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "car.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\30951\Downloads\LAB9\SUSTC-CS301Project\car\STM32F103RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="car.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -74,19 +74,19 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Car.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "Car.list"
+car.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "car.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-Car.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "Car.hex"
+car.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "car.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) Car.elf Car.hex Car.list Car.map default.size.stdout
+	-$(RM) car.elf car.hex car.list car.map default.size.stdout
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)

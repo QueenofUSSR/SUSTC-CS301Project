@@ -1,3 +1,12 @@
-../Core/Src/main.c:77:5:main	16	static
-../Core/Src/main.c:148:6:SystemClock_Config	72	static
-../Core/Src/main.c:191:6:Error_Handler	4	static,ignoring_inline_asm
+../Core/Src/main.c:100:6:canMove	16	static
+../Core/Src/main.c:104:6:dfs	32	static
+../Core/Src/main.c:133:6:initializeGrid	16	static
+../Core/Src/main.c:145:6:printGrid	16	static
+../Core/Src/main.c:162:6:detectionComplete	16	static
+../Core/Src/main.c:171:6:adaptHead	16	static
+../Core/Src/main.c:215:5:detect	16	static
+../Core/Src/main.c:222:6:mark_path	24	static
+../Core/Src/main.c:259:6:obstacle_detect	24	static
+../Core/Src/main.c:319:5:main	16	static
+../Core/Src/main.c:390:6:SystemClock_Config	72	static
+../Core/Src/main.c:433:6:Error_Handler	4	static,ignoring_inline_asm
