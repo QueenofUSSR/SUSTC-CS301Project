@@ -43,7 +43,7 @@ typedef struct {
     uint8_t checksum;   // Simple checksum
 } UART_Package_t;
 
-
+void SendEnvDetectCmd(uint8_t start, uint8_t end);
 uint8_t GetCurrentMode(void);
 void SetOperationMode(uint8_t mode);
 uint8_t CalculateChecksum(UART_Package_t* pkg);

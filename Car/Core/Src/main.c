@@ -244,11 +244,13 @@ void mark_path(){
         int dis = detect(nextX, nextY);
         if (dis<80){
             detectgrid[nextX][nextY] = 1;
-            // TODO: transmit(SIZE*nextX+nextY, 1);  //传输一格探测结果到上位机
+            // 传输一格探测结果到上位机
+            SendEnvDetectData(SIZE*nextX+nextY, 1);
             break;
         }
         detectgrid[nextX][nextY] = 2;
-        // TODO: transmit(SIZE*nextX+nextY, 2);  //传输一格探测结果到上位机
+        // 传输一格探测结果到上位机
+        SendEnvDetectData(SIZE*nextX+nextY, 2);
         //TODO: moveForward() 向前移动80cm
         currentX = nextX;
         currentY = nextY;
@@ -256,12 +258,12 @@ void mark_path(){
     return;
 }
 
-void obstacle_detect() {
+void obstacle_detect(uint8_t start, uint8_t end) {
 	//TODO: 在这里收到起点和终点坐标
-    currentX = obstacle_detect_start / 4;
-    currentY = obstacle_detect_start % 4;
-    endX = obstacle_detect_end / 4;
-    endY = obstacle_detect_end % 4;
+    currentX = start / 4;
+    currentY = start % 4;
+    endX = end / 4;
+    endY = end % 4;
     printf("start: %d, %d\n", currentX, currentY);
     printf("end: %d, %d\n", endX, endY);
     detectgrid[currentX][currentY] = 2;
@@ -353,8 +355,8 @@ int main(void)
 //	  HAL_GPIO_WritePin(L2_GPIO_Port, L2_Pin, GPIO_PIN_RESET);
 //	  motorBreak();
 //    uint8_t distance = (uint8_t)front_detection();
-//    SendDistanceData(front_detection());
-//    HAL_Delay(2000);
+   SendDistanceData(front_detection());
+   HAL_Delay(200);
 
 
     /* USER CODE END WHILE */
@@ -362,10 +364,10 @@ int main(void)
     /* USER CODE BEGIN 3 */
 
 //	  SearchRun();
-	  TurnRight_angle(&htim4, 90);
-	  HAL_Delay(3000);
-	  TurnLeft_angle(&htim4, 60);
-	  HAL_Delay(3000);
+	//   TurnRight_angle(&htim4, 90);
+	//   HAL_Delay(3000);
+	//   TurnLeft_angle(&htim4, 60);
+	//   HAL_Delay(3000);
 
 
   }

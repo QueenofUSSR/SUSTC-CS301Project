@@ -105,6 +105,9 @@ static Stage currentStage = STAGE_SET_START;
 static int8_t start_r = -1,start_c = -1;
 static int8_t end_r = -1, end_c = -1;
 
+static int start_set = 0;
+static int end_set = 0;
+
 //屏幕底部预留一个高度区域，用来放两个按钮
 #define BTN_CONFIRM_X1 0
 #define BTN_CONFIRM_Y1 290
@@ -145,13 +148,13 @@ void draw_dashed_trajectory(PixelPoint *userLine, int userLineLen, int onLength,
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-//清空屏幕并在右上角显�?"RST"
+//清空屏幕并在右上角显示"RST"
 
 ////////////////////////////////////////////////////////////////////////////////
-//电容触摸屏专有部�?
+//电容触摸屏专有部
 //画水平线
 //x0,y0:坐标
-//len:线长�?
+//len:线长
 //color:颜色
 void gui_draw_hline(u16 x0,u16 y0,u16 len,u16 color)
 {
@@ -185,16 +188,16 @@ void gui_fill_circle(u16 x0,u16 y0,u16 r,u16 color)
 		gui_draw_hline(x0-x,y0-i,2*x,color);
 	}
 }
-//两个数之差的绝对�?
-//x1,x2：需取差值的两个�?
+//两个数之差的绝对
+//x1,x2：需取差值的两个
 //返回值：|x1-x2|
 u16 my_abs(u16 x1,u16 x2)
 {
 	if(x1>x2)return x1-x2;
 	else return x2-x1;
 }
-//画一条粗�?
-//(x1,y1),(x2,y2):线条的起始坐�?
+//画一条粗
+//(x1,y1),(x2,y2):线条的起始坐标
 //size：线条的粗细程度
 //color：线条的颜色
 void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
@@ -208,12 +211,12 @@ void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 	uRow=x1;
 	uCol=y1;
 	if(delta_x>0)incx=1; //设置单步方向
-	else if(delta_x==0)incx=0;//垂直�?
+	else if(delta_x==0)incx=0;//垂直
 	else {incx=-1;delta_x=-delta_x;}
 	if(delta_y>0)incy=1;
-	else if(delta_y==0)incy=0;//水平�?
+	else if(delta_y==0)incy=0;//水平
 	else{incy=-1;delta_y=-delta_y;}
-	if( delta_x>delta_y)distance=delta_x; //选取基本增量坐标�?
+	if( delta_x>delta_y)distance=delta_x; //选取基本增量坐标
 	else distance=delta_y;
 	for(t=0;t<=distance+1;t++ )//画线输出
 	{
@@ -231,6 +234,11 @@ void lcd_draw_bline(u16 x1, u16 y1, u16 x2, u16 y2,u8 size,u16 color)
 			uCol+=incy;
 		}
 	}
+}
+
+void set_map(uint8_t x, uint8_t y, uint8_t type){
+	map[x][y] = type;
+	draw_map(map);
 }
 
 void draw_obstacle(u16 X, u16 Y)
@@ -613,25 +621,67 @@ void handle_edit()
 
 void detect_obs()
 {
-//	tp_dev.scan(0);
-	POINT_COLOR=BLACK;
-	unsigned char str[6];
-	sprintf(str, "mode%d", mode);
-	LCD_ShowString(180, 0, 200, 16, 16, str);
-	map[0][0] = ES;
-	map[0][1] = HLINE;
-	map[0][2] = WS;
-	map[1][0] = VLINE;
-	map[1][1] = OBSTACLE;
-	map[1][2] = VLINE;
-	map[2][0] = EN;
-	map[2][1] = HLINE;
-	map[2][2] = WN;
-	map[3][0] = START_POINT;
-	map[3][1] = HLINE;;
-	map[3][2] = END_POINT;
-	map[3][3] = OBSTACLE;
-	draw_map(map);
+	tp_dev.scan(0);
+    POINT_COLOR=BLACK;
+    unsigned char str[6];
+    sprintf(str, "mode%d", mode);
+    LCD_ShowString(180, 0, 200, 16, 16, str);
+    
+    // 只在第一次进入该模式时初始化地图
+    // static uint8_t first_entry = 1;
+    // if(first_entry) {
+    //     for(int i = 0; i < 4; i++) {
+    //         for(int j = 0; j < 4; j++) {
+    //             map[i][j] = EMPTY_BLOCK;
+    //         }
+    //     }
+    //     start_set = 0;
+    //     end_set = 0;
+    //     first_entry = 0;
+	// 	LCD_Clear(WHITE);
+    // }
+
+    if(tp_dev.sta&TP_PRES_DOWN)
+    {
+		LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed!");
+        if(tp_dev.x[0]<lcddev.width&&tp_dev.y[0]<lcddev.height)
+        {
+			LCD_Clear(WHITE);
+			LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 1");
+            int touchRow = (tp_dev.y[0]-40)/59;
+            int touchCol = (tp_dev.x[0]-2)/59;
+            // 确保触摸点在有效范围内
+            if(touchRow >= 0 && touchRow < 4 && touchCol >= 0 && touchCol < 4) {
+				LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 2");
+                if(map[touchRow][touchCol] == EMPTY_BLOCK){
+					LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 3");
+                    if(start_set == 0){
+						LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 4");
+                        start_set = 1;
+                        start_r = touchRow;
+                        start_c = touchCol;
+                        map[touchRow][touchCol] = START_POINT;
+						LCD_Clear(WHITE);
+						draw_map(map);
+						LCD_ShowString(0,0,200,16,16,(unsigned char*)"Start Set!");
+                    } else if(end_set == 0){
+                        end_set = 1;
+                        end_r = touchRow;
+                        end_c = touchCol;
+                        map[touchRow][touchCol] = END_POINT;
+                        SendEnvDetectCmd(start_r * 4 + start_c, end_r * 4 + end_c);
+						LCD_Clear(WHITE);
+						draw_map(map);
+						LCD_ShowString(0,0,200,16,16,(unsigned char*)"End Set!");
+
+                    }
+                }
+            }
+        }
+    } else {
+        delay_ms(10);
+    }
+    draw_map(map);
 }
 
 void track_line()
@@ -665,7 +715,7 @@ void track_line()
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
-//5个触控点的颜�?(电容触摸屏用)
+//5个触控点的颜色(电容触摸屏用)
 const u16 POINT_COLOR_TBL[5]={RED,GREEN,BLUE,BROWN,GRED};
 
 
@@ -705,11 +755,11 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   	Stm32_Clock_Init(RCC_PLL_MUL9);   	//设置时钟,72M
-	delay_init(72);               		//初始化延时函�?
-//	uart_init(115200);					//初始化串�?
+	delay_init(72);               		//初始化延时函数
+//	uart_init(115200);					//初始化串口
 //	usmart_dev.init(84); 		  	  	//初始化USMART
 	LED_Init();							//初始化LED
-	KEY_Init();							//初始化按�?
+	KEY_Init();							//初始化按键
 	LCD_Init();							//初始化LCD
 	tp_dev.init();				   		//触摸屏初始化
   /* USER CODE END Init */
@@ -737,6 +787,7 @@ int main(void)
   	while(1)
   	{
   		u8 key;
+		mode = 3;
   		key=KEY_Scan(0);
   		change_mode=0;
   		if(flag){ //flag为1，发送模式切换信号

@@ -5,6 +5,7 @@
 #include "gpio.h"
 #include "lcd.h"
 #include <stdio.h>
+#include "main.h"
 
 extern UART_HandleTypeDef huart2;
 extern uint8_t change_mode;
@@ -133,7 +134,10 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
             SendModeChangeAck(pkg->data[0]);
             break;
         case CMD_DISTANCE:
-            LCD_ShowNum(0, 10, HandleDistanceData(pkg), 1, 16);
+            float distance = HandleDistanceData(pkg);
+            char str[20];
+            sprintf(str, "Distance: %f", distance);
+            LCD_ShowString(0,25,200,16,16,str);
             break;
         case CMD_STATUS:
         	switch(pkg->data[0]){
@@ -161,7 +165,32 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
 }
 
 void ProcessEnvDetectCmd(uint8_t location, uint8_t env_type){
-	// TODO: Implement environment detection logic
+    uint8_t x = location / 4;
+    uint8_t y = location % 4;
+    switch(env_type){
+        case 1:
+            set_map(x, y, OBSTACLE);
+            break;
+        case 2:
+            set_map(x, y, EMPTY_BLOCK);
+            break;
+        case 3:
+            set_map(x, y, EMPTY_BLOCK);
+            break;
+        default:
+            break;
+    }
+}
+
+void SendEnvDetectCmd(uint8_t start, uint8_t end){
+	UART_Package_t pkg;
+	pkg.header = FRAME_HEADER;
+	pkg.cmd_type = CMD_ENV_DETECT;
+	pkg.data_len = 2;
+	pkg.data[0] = start;
+	pkg.data[1] = end;
+	pkg.checksum = CalculateChecksum(&pkg);
+	UART_SendPackage(&pkg);
 }
 
 float HandleDistanceData(UART_Package_t* pkg) {

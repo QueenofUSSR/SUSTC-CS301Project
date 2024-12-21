@@ -36,7 +36,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+void obstacle_detect(uint8_t start, uint8_t end);
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

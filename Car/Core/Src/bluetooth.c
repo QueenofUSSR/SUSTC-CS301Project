@@ -111,11 +111,19 @@ void ProcessReceivedPackage(UART_Package_t* pkg) {
             // Send mode change acknowledgment
             SendModeChangeAck(pkg->data[0]);
             break;
+        case CMD_STATUS:
+            if(current_mode == MODE_OBS_NAV){
+                ProcessEnvDetectCmd(pkg->data[0], pkg->data[1]);
+            }
+            break;
         default:
             break;
     }
 }
 
+void ProcessEnvDetectCmd(uint8_t start, uint8_t end){
+    obstacle_detect(start, end);
+}
 
 void SendDistanceData(float distance) {
     UART_Package_t pkg;

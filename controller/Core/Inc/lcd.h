@@ -41,16 +41,16 @@ extern u16  POINT_COLOR;//Ĭ�Ϻ�ɫ
 extern u16  BACK_COLOR; //������ɫ.Ĭ��Ϊ��ɫ
 
 ////////////////////////////////////////////////////////////////////
-#define EMPTY_BLOCK 0
-#define OBSTACLE 1
-#define HLINE 2
-#define VLINE 3
-#define WN 4
-#define EN 5
-#define WS 6
-#define ES 7
-#define START_POINT 8
-#define END_POINT 9
+#define EMPTY_BLOCK 0  // 空白块
+#define OBSTACLE 1     // 障碍物
+#define HLINE 2        // 水平线
+#define VLINE 3        // 垂直线
+#define WN 4           // 西北方向
+#define EN 5           // 东北方向
+#define WS 6           // 西南方向
+#define ES 7           // 东南方向
+#define START_POINT 8  // 起始点
+#define END_POINT 9    // 终点
 
 #define FULL_CONTROL 1
 #define PATH_PROCESSING 2
