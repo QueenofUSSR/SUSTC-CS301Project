@@ -280,6 +280,9 @@ void draw_path(u16 X, u16 Y, u8 type)
 void draw_map(uint8_t map[4][4])
 {
 	POINT_COLOR=BLACK;
+	char mode_str[10];
+	sprintf(mode_str, "mode%d", mode);
+	LCD_ShowString(180, 0, 200, 16, 16, mode_str);
 	for(int i=0;i<4;i++){
 		for(int j=0;j<4;j++){
 			int X = 2+59*j;
@@ -380,9 +383,6 @@ void path_processing()
 	    }
 	LCD_ShowString(130, 25, 200,16,16,stageInfo);
 
-	unsigned char str[20];
-	sprintf(str, "mode%d %d %d %d %d", mode,start_r,start_c,end_r,end_c);
-	LCD_ShowString(130, 0, 200, 16, 16, str);
 	draw_map(map);
 	draw_buttons();
 	if(tp_dev.sta&TP_PRES_DOWN)
@@ -623,40 +623,18 @@ void detect_obs()
 {
 	tp_dev.scan(0);
     POINT_COLOR=BLACK;
-    unsigned char str[6];
-    sprintf(str, "mode%d", mode);
-    LCD_ShowString(180, 0, 200, 16, 16, str);
-    
-    // 只在第一次进入该模式时初始化地图
-    // static uint8_t first_entry = 1;
-    // if(first_entry) {
-    //     for(int i = 0; i < 4; i++) {
-    //         for(int j = 0; j < 4; j++) {
-    //             map[i][j] = EMPTY_BLOCK;
-    //         }
-    //     }
-    //     start_set = 0;
-    //     end_set = 0;
-    //     first_entry = 0;
-	// 	LCD_Clear(WHITE);
-    // }
 
     if(tp_dev.sta&TP_PRES_DOWN)
     {
-		LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed!");
         if(tp_dev.x[0]<lcddev.width&&tp_dev.y[0]<lcddev.height)
         {
 			LCD_Clear(WHITE);
-			LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 1");
             int touchRow = (tp_dev.y[0]-40)/59;
             int touchCol = (tp_dev.x[0]-2)/59;
             // 确保触摸点在有效范围内
             if(touchRow >= 0 && touchRow < 4 && touchCol >= 0 && touchCol < 4) {
-				LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 2");
                 if(map[touchRow][touchCol] == EMPTY_BLOCK){
-					LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 3");
                     if(start_set == 0){
-						LCD_ShowString(0,0,200,16,16,(unsigned char*)"LCD pressed! 4");
                         start_set = 1;
                         start_r = touchRow;
                         start_c = touchCol;
@@ -673,7 +651,8 @@ void detect_obs()
 						LCD_Clear(WHITE);
 						draw_map(map);
 						LCD_ShowString(0,0,200,16,16,(unsigned char*)"End Set!");
-
+						start_set = 0;
+						end_set = 0;
                     }
                 }
             }
@@ -693,9 +672,13 @@ void track_line()
 	LCD_ShowString(180, 0, 200, 16, 16, str);
 
 	LCD_DrawRectangle(50, 100, 190, 140);
-	LCD_ShowString(60, 110, 120, 30, 18, (unsigned char*)"Track line");
+	char track_line_str[20];
+	sprintf(track_line_str, "Track line");
+	LCD_ShowString(60, 110, 200, 16, 16, (unsigned char*)track_line_str);
 	LCD_DrawRectangle(50, 180, 190, 220);
-	LCD_ShowString(60, 190, 120, 30, 18, (unsigned char*)"Full control");
+	char full_control_str[20];
+	sprintf(full_control_str, "Full control");
+	LCD_ShowString(60, 190, 200, 16, 16, (unsigned char*)full_control_str);
 
 	if(tp_dev.sta&TP_PRES_DOWN
 			&& tp_dev.x[0] > 50 && tp_dev.x[0] < 190)
@@ -787,7 +770,6 @@ int main(void)
   	while(1)
   	{
   		u8 key;
-		mode = 3;
   		key=KEY_Scan(0);
   		change_mode=0;
   		if(flag){ //flag为1，发送模式切换信号

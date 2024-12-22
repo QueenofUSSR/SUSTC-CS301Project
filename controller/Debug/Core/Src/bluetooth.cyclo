@@ -8,7 +8,7 @@
 ../Core/Src/bluetooth.c:91:6:SendDistanceData	1
 ../Core/Src/bluetooth.c:110:5:VerifyChecksum	2
 ../Core/Src/bluetooth.c:115:6:ProcessReceivedPackage	9
-../Core/Src/bluetooth.c:164:6:ProcessEnvDetectCmd	5
-../Core/Src/bluetooth.c:182:6:SendEnvDetectCmd	1
-../Core/Src/bluetooth.c:193:7:HandleDistanceData	3
-../Core/Src/bluetooth.c:211:19:UART_SendPackage	1
+../Core/Src/bluetooth.c:167:6:ProcessEnvDetectCmd	5
+../Core/Src/bluetooth.c:185:6:SendEnvDetectCmd	1
+../Core/Src/bluetooth.c:196:7:HandleDistanceData	3
+../Core/Src/bluetooth.c:214:19:UART_SendPackage	1
