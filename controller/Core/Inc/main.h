@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+void obstacle_detect(uint8_t start, uint8_t end);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

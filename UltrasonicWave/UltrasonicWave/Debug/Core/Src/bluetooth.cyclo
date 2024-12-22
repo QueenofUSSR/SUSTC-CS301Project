@@ -1,0 +1,17 @@
+../Core/Src/bluetooth.c:15:6:SetOperationMode	2
+../Core/Src/bluetooth.c:21:9:GetCurrentMode	1
+../Core/Src/bluetooth.c:26:6:UART_SendModeCmd	1
+../Core/Src/bluetooth.c:38:6:SendModeChangeAck	1
+../Core/Src/bluetooth.c:51:6:SendNavAck	1
+../Core/Src/bluetooth.c:64:6:UART_SendMotionCmd	1
+../Core/Src/bluetooth.c:77:6:UART_SendNavCmd	1
+../Core/Src/bluetooth.c:91:6:ProcessReceivedPackage	9
+../Core/Src/bluetooth.c:124:6:ProcessEnvDetectCmd	1
+../Core/Src/bluetooth.c:128:6:SendDistanceData	1
+../Core/Src/bluetooth.c:148:9:CalculateChecksum	2
+../Core/Src/bluetooth.c:158:5:VerifyChecksum	2
+../Core/Src/bluetooth.c:163:19:UART_SendPackage	1
+../Core/Src/bluetooth.c:181:6:ProcessMotionCmd	8
+../Core/Src/bluetooth.c:237:6:ProcessNavCmd	17
+../Core/Src/bluetooth.c:309:6:SendEnvDetectData	1
+../Core/Src/bluetooth.c:320:6:StopMotion	1

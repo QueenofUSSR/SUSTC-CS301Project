@@ -61,6 +61,7 @@
     "*.layout-template": "vue",
     "*.vue": "vue",
     "stm32f1xx_hal.h": "c",
-    "bluetooth.h": "c"
+    "bluetooth.h": "c",
+    "ultrasonicwave.h": "c"
   }
 }

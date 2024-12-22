@@ -1,0 +1,4 @@
+../Core/SYSTEM/UltrasonicWave.c:6:6:UltrasonicWave_StartMeasure	8	static
+../Core/SYSTEM/UltrasonicWave.c:14:7:front_detection	16	static
+../Core/SYSTEM/UltrasonicWave.c:23:7:left_detection	16	static
+../Core/SYSTEM/UltrasonicWave.c:32:7:right_detection	16	static

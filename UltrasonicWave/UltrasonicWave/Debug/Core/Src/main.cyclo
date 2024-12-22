@@ -1,0 +1,12 @@
+../Core/Src/main.c:98:6:canMove	7
+../Core/Src/main.c:102:6:dfs	6
+../Core/Src/main.c:131:6:initializeGrid	4
+../Core/Src/main.c:143:6:detectionComplete	4
+../Core/Src/main.c:152:6:adaptHead	21
+../Core/Src/main.c:196:5:detect	2
+../Core/Src/main.c:202:5:detection	8
+../Core/Src/main.c:238:6:mark_path	9
+../Core/Src/main.c:281:6:obstacle_detect	10
+../Core/Src/main.c:335:5:main	1
+../Core/Src/main.c:425:6:SystemClock_Config	3
+../Core/Src/main.c:468:6:Error_Handler	1
